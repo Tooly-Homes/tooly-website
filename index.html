@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tooly — A house. Hundred grand. Built to last.</title>
+<meta name="description" content="264 square feet of poured concrete, hurricane-rated, furnished and finished. The future you were promised, on a payment plan you can actually meet." />
+
+<!-- Preload the default hero render so the page paints fast -->
+<link rel="preload" as="image" href="img/tooly-orange-hero.jpg" />
+
+<!-- Varela Round — closest free analog to VAG Rounded Bold for the Tooly pill styling -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
+<!-- Cloudflare Turnstile — invisible-when-possible captcha for the reserve form.
+     Loads async so it doesn't block page paint. Renders inside the modal form. -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<style>
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #F5F0E6;
+    color: #1A1A1A;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img { max-width: 100%; display: block; }
+  button { font-family: inherit; }
+  em { font-style: italic; }
+  a { color: inherit; }
+
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* HEADER */
+  .header { background: #3A6EA5; }
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .nav-logo {
+    height: 36px;
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+  }
+  .nav > a { flex-shrink: 0; }
+  .nav-links {
+    display: flex;
+    gap: 22px;
+    font-size: 12px;
+    color: #F5F5F0;
+    letter-spacing: 1px;
+  }
+  .nav-links a { color: inherit; text-decoration: none; }
+  .nav-link-locked {
+    color: rgba(245, 245, 240, 0.45);
+    cursor: not-allowed;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    user-select: none;
+  }
+  .nav-link-locked .lock-icon {
+    font-size: 10px;
+    filter: grayscale(1);
+  }
+  .nav-cta {
+    background: #2A6B5D;
+    color: #FFFFFF;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-family: 'Varela Round', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 2px 2px 0 #1A4D42;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+  .nav-cta:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 #1A4D42;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 56px 40px 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .hero-copy {
+    padding-bottom: 0;
+  }
+  /* The Tooly pill — big, confident brand mark in the hero copy column.
+     Replaces the older small "TOOLY · MIAMI" eyebrow. */
+  .hero-logo-pill {
+    display: block;
+    height: 72px;
+    width: auto;
+    margin: 0 0 28px;
+  }
+  .hero h1 {
+    font-size: 60px;
+    line-height: 0.95;
+    color: #FFFFFF;
+    margin: 0 0 24px;
+    font-weight: 700;
+    letter-spacing: -2px;
+  }
+  .hero p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #F5F5F0;
+    max-width: 440px;
+    margin: 0 0 28px;
+  }
+  .hero-ctas {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .showroom-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .coming-soon {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #FFD37E;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .btn-locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .lock-icon {
+    font-size: 11px;
+    margin-right: 4px;
+    display: inline-block;
+    filter: grayscale(1);
+  }
+
+  /* RESERVE FORM MODAL */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 24, 16, 0.78);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 999;
+    padding: 32px 16px;
+    overflow-y: auto;
+  }
+  .modal-backdrop.open {
+    display: flex;
+  }
+  .modal {
+    background: #F5F0E6;
+    border-radius: 16px;
+    max-width: 540px;
+    width: 100%;
+    padding: 40px 36px;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    margin: auto;
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #5F5E5A;
+    line-height: 1;
+    padding: 8px;
+  }
+  .modal-eyebrow {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #F58041;
+    margin-bottom: 10px;
+  }
+  .modal h2 {
+    font-size: 28px;
+    line-height: 1.1;
+    color: #1A1A1A;
+    margin: 0 0 8px;
+    font-weight: 500;
+    letter-spacing: -0.8px;
+  }
+  .modal-intro {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #5F5E5A;
+    margin: 0 0 24px;
+  }
+  .reserve-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-field label {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: #5F5E5A;
+    font-weight: 500;
+  }
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(26,26,26,0.2);
+    background: #FFFFFF;
+    color: #1A1A1A;
+    width: 100%;
+  }
+  .form-field input:focus,
+  .form-field select:focus,
+  .form-field textarea:focus {
+    outline: none;
+    border-color: #F58041;
+    box-shadow: 0 0 0 3px rgba(245,128,65,0.15);
+  }
+  .form-field textarea {
+    min-height: 96px;
+    resize: vertical;
+  }
+  .form-submit {
+    background: #F58041;
+    color: #FFFFFF;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 3px 3px 0 #C94A1F;
+    border: none;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .form-submit:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 #C94A1F;
+  }
+  .form-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .turnstile-wrap {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 4px;
+    min-height: 65px;
+  }
+  .form-error {
+    background: #FDECEA;
+    border: 1px solid #E5A39A;
+    color: #8B2418;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 4px;
+    display: none;
+  }
+  .form-error.show { display: block; }
+  .form-thank-you {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .form-thank-you h3 {
+    font-size: 24px;
+    color: #1A1A1A;
+    margin: 0 0 12px;
+    font-weight: 500;
+  }
+  .form-thank-you p {
+    color: #5F5E5A;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .btn-primary {
+    background: #F58041;
+    color: #FFFFFF;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 3px 3px 0 #C94A1F;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-secondary {
+    background: transparent;
+    border: 1.5px solid #FFD37E;
+    color: #FFD37E;
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .hero-render-wrap {
+    align-self: center;
+  }
+  /* Framed render: full radius, sits on a brand-red offset shadow.
+     Same shadow color as every button on the site — scaled up. */
+  .hero-render {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    display: block;
+    box-shadow: 16px 16px 0 0 #C94A1F;
+  }
+  .stat-chip-wrap { padding: 24px 40px 40px; background: #3A6EA5; }
+  .stat-chip {
+    background: #F58041;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    box-shadow: 6px 6px 0 #C94A1F;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .stat-chip .label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #FAEEDA;
+    margin-bottom: 4px;
+  }
+  .stat-chip .value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -1px;
+  }
+  .stat-chip .sub {
+    font-size: 11px;
+    color: #FAEEDA;
+  }
+
+  /* MARQUEE */
+  .marquee {
+    background: #F5F0E6;
+    color: #F58041;
+    padding: 13px 0;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-align: center;
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    border-top: 1px solid rgba(245,128,65,0.3);
+    border-bottom: 1px solid rgba(245,128,65,0.3);
+  }
+
+  /* SECTION SHARED */
+  .section { padding: 64px 40px; }
+  .section-grid {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 48px;
+    align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #5F5E5A;
+    margin-bottom: 6px;
+  }
+  .section-label-light { color: #FFFFFF; }
+  .section-label-teal { color: #9FE1CB; }
+  .section-tag {
+    font-size: 13px;
+    color: #1A1A1A;
+    font-weight: 500;
+  }
+  .section-tag-light { color: #FFFFFF; }
+  .section h2 {
+    font-size: 36px;
+    line-height: 1.1;
+    color: #1A1A1A;
+    margin: 0 0 20px;
+    font-weight: 500;
+    letter-spacing: -1px;
+    max-width: 480px;
+  }
+  .section p {
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 0 16px;
+    max-width: 540px;
+  }
+
+  /* Floorplan frame: dark card that holds the section-01 cutaway render.
+     Same #0E0E0E surface as the Every Angle section and the configurator
+     preview — black absorbs the edge halo from the background-removed PNG,
+     and creates a museum-exhibit feel against the cream section. */
+  .floorplan-frame {
+    background: #0E0E0E;
+    border-radius: 14px;
+    padding: 28px 28px 22px;
+    max-width: 700px;
+    display: inline-block;
+  }
+  .floorplan-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .floorplan-caption {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #888780;
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  /* SECTION 02: HOW IT WORKS */
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .step-card {
+    background: #FFFFFF;
+    border-radius: 8px;
+    padding: 28px 28px 26px;
+    border: 0.5px solid rgba(26,26,26,0.15);
+    position: relative;
+  }
+  .step-num {
+    position: absolute;
+    top: -14px;
+    left: 24px;
+    background: #F58041;
+    color: #FFFFFF;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 2px 2px 0 #C94A1F;
+  }
+  .step-meta {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #F58041;
+    margin: 8px 0 10px;
+  }
+  .step-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #1A1A1A;
+    margin-bottom: 10px;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+  }
+  .step-body {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #5F5E5A;
+  }
+
+  /* THE TOOLY KITCHEN */
+  .kitchen-section { background: #2A1810; padding: 40px; }
+  .kitchen-card {
+    background: #3D2817;
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .kitchen-eyebrow {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #FFFFFF;
+    margin-bottom: 8px;
+  }
+  .kitchen-card h3 {
+    font-size: 22px;
+    color: #FFFFFF;
+    margin: 0 0 24px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+  }
+  .kitchen-grid {
+    background: #F5E5D0;
+    border-radius: 8px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  #kitchen-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+    aspect-ratio: 4 / 3;
+    background: #6B4327;
+    object-fit: cover;
+    box-shadow: 12px 12px 0 0 #C94A1F;
+  }
+  .kitchen-swatches {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .ks {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: border-color 150ms ease;
+  }
+  .ks.active { border-color: #1A1A1A; }
+  .kitchen-color-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #1A1A1A;
+    margin-top: 28px;
+    margin-bottom: 8px;
+  }
+  #kitchen-name {
+    font-size: 11px;
+    color: #1A1A1A;
+    letter-spacing: 1px;
+    margin-top: 10px;
+  }
+  .kitchen-copy {
+    font-size: 16px;
+    line-height: 1.65;
+    color: #1A1A1A;
+    margin: 0 0 14px;
+  }
+  .kitchen-standard {
+    font-size: 13px;
+    color: #1A1A1A;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+
+  /* SECTION 03: CONFIGURATOR */
+  .configurator-section {
+    background: #F58041;
+    padding: 64px 40px;
+  }
+  .configurator-section h2 { color: #FFFFFF; }
+  .configurator-section p { color: #FAEEDA; max-width: 460px; }
+  .configurator-section .section-label { color: #FAEEDA; }
+  .configurator-section .section-tag { color: #FFFFFF; }
+  .configurator-card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .configurator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .config-preview {
+    background: #0E0E0E;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    aspect-ratio: 16 / 9;
+  }
+  #config-render {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .config-section { margin-bottom: 16px; }
+  .config-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #5F5E5A;
+    margin-bottom: 8px;
+  }
+  .config-swatches {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    max-width: 160px;
+  }
+  .config-swatch {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    border: 3px solid transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+  .config-swatch.active { border-color: #1A1A1A; }
+  .summary-table {
+    width: 100%;
+    font-size: 13px;
+    color: #1A1A1A;
+    border-collapse: collapse;
+  }
+  .summary-table td {
+    padding: 8px 0;
+    border-bottom: 0.5px solid rgba(26,26,26,0.15);
+  }
+  .summary-table tr:last-child td {
+    border-bottom: none;
+    padding: 12px 0 0;
+  }
+  .summary-table .value-col { text-align: right; font-weight: 500; }
+  .total-row td { font-weight: 500; }
+  .total-row .total-amount {
+    font-weight: 700;
+    font-size: 18px;
+    color: #F58041;
+  }
+  .reserve-btn {
+    background: #1A1A1A;
+    color: #FFFFFF;
+    padding: 12px;
+    border-radius: 999px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 18px;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+  }
+
+  /* SECTION 04: HISTORY */
+  .history-section {
+    background: #2A1810;
+    color: #F5E5D0;
+    padding: 64px 40px;
+  }
+  .history-section h2 {
+    color: #FFFFFF;
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    max-width: 520px;
+  }
+  .history-section p { color: #FFFFFF; }
+  /* The Hadrian closer — now the centerpiece of the section. Bigger,
+     bolder, with more breathing room around it. */
+  .history-closing {
+    font-size: 30px !important;
+    line-height: 1.35 !important;
+    color: #FFFFFF !important;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    margin-top: 48px !important;
+    max-width: 800px;
+  }
+  .history-lead {
+    font-size: 19px !important;
+    line-height: 1.55 !important;
+    color: #FFFFFF !important;
+    margin: 0 0 18px !important;
+    max-width: 640px;
+  }
+  .history-staccato {
+    font-size: 24px !important;
+    line-height: 1.35 !important;
+    color: #FFD37E !important;
+    margin: 4px 0 0 !important;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    max-width: 540px;
+    padding-left: 18px;
+    border-left: 3px solid #F58041;
+  }
+  .history-staccato .staccato-end {
+    color: #FFFFFF;
+    display: inline-block;
+    margin-top: 6px;
+    font-weight: 700;
+  }
+
+  /* Lumber + staccato — side-by-side flex layout on desktop,
+     stacks on mobile. The lumber cartoon is interactive. */
+  .lumber-row {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 32px;
+    align-items: center;
+    margin: 36px 0 8px;
+    padding: 24px;
+    background: #3D2817;
+    border-radius: 14px;
+    border: 1px solid #4A3220;
+  }
+  .lumber-demo {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: transform 120ms ease;
+  }
+  .lumber-demo:hover { transform: translateY(-2px); }
+  .lumber-demo:focus { outline: none; }
+  .lumber-demo:focus-visible { outline: 2px dashed #FFD37E; outline-offset: 6px; border-radius: 8px; }
+  .lumber-demo svg { width: 100%; height: auto; display: block; }
+  .lumber-demo .flames { opacity: 0; transition: opacity 320ms ease; }
+  .lumber-demo .plank,
+  .lumber-demo .plank-grain { transition: fill 1100ms ease; }
+  .lumber-demo .flame { transform-origin: center bottom; }
+  .lumber-demo .ember { opacity: 0; }
+  .lumber-demo.burning .flames { opacity: 1; }
+  .lumber-demo.burning .flame { animation: lumberFlame 0.4s ease-in-out infinite alternate; }
+  .lumber-demo.burning .flame.f2 { animation-delay: 0.08s; }
+  .lumber-demo.burning .flame.f3 { animation-delay: 0.14s; }
+  .lumber-demo.burning .plank-top    { fill: #2E1A0E; }
+  .lumber-demo.burning .plank-mid    { fill: #2A1810; }
+  .lumber-demo.burning .plank-bottom { fill: #241410; }
+  .lumber-demo.burning .plank-grain  { fill: #3D2817; }
+  .lumber-demo.burning .ember { animation: emberRise 2.2s linear infinite; }
+  .lumber-demo.burning .ember.e1 { animation-delay: 0s; }
+  .lumber-demo.burning .ember.e2 { animation-delay: 0.5s; }
+  .lumber-demo.burning .ember.e3 { animation-delay: 0.9s; }
+  .lumber-demo.burning .ember.e4 { animation-delay: 1.3s; }
+  .lumber-demo.burning .ember.e5 { animation-delay: 1.7s; }
+  @keyframes lumberFlame {
+    0%   { transform: scaleY(1)    scaleX(1)    translateY(0); }
+    100% { transform: scaleY(1.07) scaleX(0.96) translateY(-2px); }
+  }
+  @keyframes emberRise {
+    0%   { opacity: 0; transform: translateY(0)    translateX(0); }
+    15%  { opacity: 1; }
+    80%  { opacity: 1; transform: translateY(-55px) translateX(6px); }
+    100% { opacity: 0; transform: translateY(-70px) translateX(8px); }
+  }
+  .lumber-hint {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 10px;
+    transition: color 300ms ease;
+    font-weight: 500;
+  }
+  .lumber-demo.burning .lumber-hint {
+    color: #FFD37E;
+  }
+  .history-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 36px 0 24px;
+  }
+  .history-card {
+    background: #3D2817;
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 3px solid #F58041;
+  }
+  .history-date {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #FFD37E;
+    margin-bottom: 8px;
+  }
+  .history-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: #F5E5D0;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .history-body {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #C9A87C;
+  }
+  .history-quote {
+    background: #1A0F08;
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 8px;
+  }
+  .history-quote p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #FFD37E;
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* ============ THE MOMENT (manifesto) ============
+     Editorial pause between the historical context (Section 04) and
+     the rental financial pitch (Section 05). Cream canvas sandwiched
+     between two dark sections — the lightness IS the drama. Type
+     does almost all the heavy lifting; two thin orange rules mark it
+     as a special interruption rather than a normal content section. */
+  .manifesto-section {
+    background: #F5F0E6;
+    padding: 120px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .manifesto-section::before,
+  .manifesto-section::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56px;
+    height: 4px;
+    background: #F58041;
+    border-radius: 2px;
+  }
+  .manifesto-section::before { top: 56px; }
+  .manifesto-section::after  { bottom: 56px; }
+  .manifesto-inner {
+    max-width: 820px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .manifesto-eyebrow {
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: #C94A1F;
+    margin-bottom: 56px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .manifesto-body {
+    font-size: 26px;
+    line-height: 1.4;
+    color: #1A1A1A;
+    margin: 0 auto 28px;
+    font-weight: 400;
+    letter-spacing: -0.4px;
+    max-width: 720px;
+  }
+  .manifesto-body strong {
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+  /* The emotional center — sized to match the closer so the two giant
+     lines read as a pair at the top of the section. */
+  .manifesto-wantyou {
+    font-size: 60px;
+    line-height: 1.04;
+    color: #C94A1F;
+    font-style: italic;
+    margin: 0 auto 64px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    max-width: 820px;
+  }
+  /* The kicker — now sits at the top of the section as the lead line. */
+  .manifesto-closer {
+    font-size: 60px;
+    line-height: 1.04;
+    color: #1A1A1A;
+    margin: 0 auto 32px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    max-width: 820px;
+  }
+
+  /* SECTION 05: RENT IT OUT */
+  .rental-section {
+    background: #2A6B5D;
+    color: #F5E5D0;
+    padding: 64px 40px;
+  }
+  .rental-section h2 {
+    color: #FFFFFF;
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    max-width: 560px;
+  }
+  .rental-section h3 {
+    font-size: 24px;
+    color: #FFFFFF;
+    margin: 0 0 16px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+  }
+  .rental-section h4 {
+    font-size: 22px;
+    color: #FFFFFF;
+    margin: 0 0 16px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+  }
+  .rental-section p { color: #FFFFFF; }
+  .rental-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #9FE1CB;
+    margin-bottom: 14px;
+  }
+  .rental-mathchip {
+    background: #1F4F44;
+    border-radius: 12px;
+    padding: 28px;
+    margin: 16px 0 28px;
+  }
+  .math-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  .math-block {
+    background: #0F4138;
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .math-block .label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #9FE1CB;
+    margin-bottom: 6px;
+  }
+  .math-block .value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .math-block .sub {
+    font-size: 11px;
+    color: #9FE1CB;
+    margin-top: 6px;
+  }
+  .math-op {
+    font-size: 24px;
+    color: #9FE1CB;
+    text-align: center;
+    font-weight: 500;
+  }
+  .math-result {
+    background: #F58041;
+    border-radius: 8px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 4px 4px 0 #C94A1F;
+    margin-top: 18px;
+  }
+  .math-result .label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #FAEEDA;
+    margin-bottom: 6px;
+  }
+  .math-result .value {
+    font-size: 48px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -1.5px;
+    line-height: 1;
+  }
+  .math-result .sub {
+    font-size: 12px;
+    color: #FAEEDA;
+    margin-top: 6px;
+  }
+  .math-explainer {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: #0F4138;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: #9FE1CB;
+  }
+  .math-explainer strong { color: #FFD37E; font-weight: 500; }
+  .pillar {
+    background: #1F4F44;
+    border-radius: 8px;
+    padding: 24px 28px;
+    border-left: 3px solid #F58041;
+    margin-bottom: 14px;
+  }
+  .pillar .label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #FFD37E;
+    margin-bottom: 10px;
+  }
+  .pillar .body {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #FFFFFF;
+  }
+  .bank-block {
+    background: #0F4138;
+    border-radius: 12px;
+    padding: 28px;
+    margin: 28px 0;
+    border: 1px solid #2A6B5D;
+  }
+  .bank-block .eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #FFD37E;
+    margin-bottom: 14px;
+  }
+  .bank-script {
+    background: #1F4F44;
+    border-radius: 8px;
+    padding: 22px;
+    margin: 18px 0;
+  }
+  .bank-script .label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #9FE1CB;
+    margin-bottom: 12px;
+  }
+  .bank-script p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #F5E5D0;
+    margin: 0;
+    font-style: italic;
+  }
+  .bank-block > p:last-child {
+    font-size: 13px;
+    line-height: 1.65;
+    color: #9FE1CB;
+    margin: 0;
+  }
+  .why-block {
+    background: #0F4138;
+    border-radius: 12px;
+    padding: 28px;
+    border: 1px solid #2A6B5D;
+  }
+  /* Standout block for the "Become a developer" pitch — larger and
+     more prominent than the surrounding section copy. */
+  .developer-block {
+    background: #1F4F44;
+    border-radius: 14px;
+    padding: 36px 40px;
+    border-left: 4px solid #F58041;
+    margin: 12px 0 36px;
+    box-shadow: 6px 6px 0 #0F4138;
+  }
+  .developer-block h3 {
+    font-size: 32px;
+    line-height: 1.08;
+    margin: 0 0 20px;
+    letter-spacing: -0.8px;
+  }
+  .developer-block p {
+    font-size: 19px;
+    line-height: 1.6;
+    color: #FFFFFF;
+    margin: 0;
+    max-width: none;
+  }
+  .calc-cta {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .calc-cta .note { font-size: 12px; color: #9FE1CB; }
+
+  /* FOOTER */
+  .footer { background: #1A1A1A; padding: 56px 40px; }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: end;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .footer-logo {
+    height: 48px;
+    width: auto;
+    margin-bottom: 18px;
+    display: block;
+  }
+  .footer-info {
+    font-size: 13px;
+    color: #888780;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 300px;
+  }
+  .footer-tagline { text-align: right; }
+  .footer-tagline .big {
+    font-size: 22px;
+    color: #FFD37E;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+  }
+
+  /* TEXTURE BAND DIVIDER */
+  .texture-band {
+    background-image: url('img/tooly-materials-detail.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 96px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Soft horizontal gradient — clears the corners so the stone & wood
+     show through, darkens behind the centered text for readability. */
+  .texture-band::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 80% at center, rgba(20,12,6,0.55) 0%, rgba(20,12,6,0.25) 70%, rgba(20,12,6,0.1) 100%);
+    pointer-events: none;
+  }
+  .texture-band-content {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .texture-band-eyebrow {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #FFD37E;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .texture-band-line {
+    font-size: 56px;
+    line-height: 1.05;
+    color: #FFFFFF;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    margin: 0;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.45);
+  }
+
+  /* ============ LIFESTYLE BAND ============
+     Photographic moment between Section 04 (history) and Section 05
+     (rent it out). Cream background, image framed with the same rounded
+     corners + brand-red offset shadow vocabulary as the hero render. */
+  .lifestyle-band {
+    background: #F5F0E6;
+    padding: 96px 40px;
+  }
+  .lifestyle-band-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .lifestyle-eyebrow {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #C94A1F;
+    margin: 0 0 28px;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: center;
+  }
+  .lifestyle-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 16px 16px 0 0 #C94A1F;
+  }
+  .lifestyle-caption {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #5F5E5A;
+    text-align: center;
+    margin: 36px 0 0;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ============ EVERY ANGLE ============
+     Showroom-style gallery on a dark canvas. The Profile renders sit
+     on solid black so they melt seamlessly into the section background;
+     the Twisted (3/4 in-context) renders pop against the same dark. */
+  .angles-section {
+    background: #0E0E0E;
+    padding: 88px 40px;
+  }
+  .angles-head {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 56px;
+  }
+  .angles-eyebrow {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #FFD37E;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .angles-section h2 {
+    font-size: 44px;
+    line-height: 1.05;
+    color: #FFFFFF;
+    margin: 0 0 18px;
+    font-weight: 500;
+    letter-spacing: -1.2px;
+  }
+  .angles-section .angles-sub {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #B3B0A8;
+    margin: 0 auto;
+    max-width: 540px;
+  }
+  .angles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .angle-card {
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16 / 9;
+  }
+  .angle-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .angle-label {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: #FFFFFF;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 6px 12px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 40px 24px 0; gap: 24px; }
+    .hero h1 { font-size: 44px; }
+    .hero-logo-pill { height: 56px; margin-bottom: 24px; }
+    .hero-render-wrap { margin: 8px -24px -40px; align-self: auto; }
+    .hero-render { border-radius: 0; box-shadow: none; }
+    .lifestyle-band { padding: 64px 24px; }
+    .lifestyle-image { border-radius: 14px; box-shadow: 8px 8px 0 0 #C94A1F; }
+    .stat-chip-wrap { padding: 24px; }
+    .stat-chip { grid-template-columns: 1fr; }
+    .section-grid { grid-template-columns: 1fr; gap: 16px; }
+    .steps { grid-template-columns: 1fr; }
+    .kitchen-grid { grid-template-columns: 1fr; }
+    .configurator-grid { grid-template-columns: 1fr; }
+    .history-grid { grid-template-columns: 1fr; }
+    .history-section h2, .rental-section h2 { font-size: 32px; }
+    .history-closing { font-size: 21px !important; margin-top: 32px !important; }
+    .history-lead { font-size: 16px !important; }
+    .history-staccato { font-size: 19px !important; padding-left: 14px; }
+    .lumber-row { grid-template-columns: 1fr; gap: 20px; padding: 20px; }
+    .lumber-demo { max-width: 280px; margin: 0 auto; }
+    .angles-section { padding: 56px 24px; }
+    .angles-section h2 { font-size: 32px; }
+    .angles-grid { grid-template-columns: 1fr; gap: 18px; }
+    .manifesto-section { padding: 80px 24px; }
+    .manifesto-section::before { top: 36px; }
+    .manifesto-section::after  { bottom: 36px; }
+    .manifesto-body { font-size: 19px; margin-bottom: 22px; }
+    .manifesto-wantyou { font-size: 36px; margin: 0 auto 44px; letter-spacing: -1.2px; }
+    .manifesto-closer { font-size: 36px; letter-spacing: -1.2px; margin-bottom: 22px; }
+    .floorplan-frame { padding: 18px 18px 14px; max-width: 100%; display: block; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-tagline { text-align: left; }
+    .math-row { grid-template-columns: 1fr; }
+    .math-op { padding: 8px 0; }
+  }
+
+  @media (max-width: 768px) {
+    .nav { padding: 14px 20px; gap: 12px; }
+    .nav-logo { height: 30px; }
+    .nav-links { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .section, .configurator-section, .history-section, .rental-section {
+      padding: 48px 24px;
+    }
+    .kitchen-section { padding: 24px; }
+    .texture-band { padding: 56px 24px; }
+    .texture-band-line { font-size: 36px; letter-spacing: -1px; }
+    .kitchen-card { padding: 24px; }
+    .hero { padding: 40px 24px 0; }
+    .footer { padding: 40px 24px; }
+    .nav { padding: 16px 20px; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ============ HEADER + HERO ============ -->
+<header class="header">
+  <nav class="nav">
+    <a href="/" aria-label="Tooly home">
+      <img src="img/tooly-logo.png" alt="Tooly" class="nav-logo" />
+    </a>
+    <div class="nav-links">
+      <a href="#house">The house</a>
+      <a href="#configure">Configure</a>
+      <span class="nav-link-locked" aria-disabled="true" title="Showroom coming soon">
+        <span class="lock-icon" aria-hidden="true">🔒</span>Showroom
+      </span>
+    </div>
+    <a href="#" onclick="openReserveForm(); return false;" class="nav-cta">Reserve</a>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-copy">
+      <img src="img/tooly-logo.png" alt="Tooly" class="hero-logo-pill" />
+      <h1>a house.<br/>hundred grand.<br/>built to last.</h1>
+      <p>264 square feet, smart, steel and concrete build, hurricane-rated, furnished and finished. The future you were promised, on a payment plan you can actually meet.</p>
+      <div class="hero-ctas">
+        <button type="button" class="btn-primary" onclick="openReserveForm()">Reserve a Tooly →</button>
+        <div class="showroom-wrap">
+          <div class="coming-soon">Coming soon!</div>
+          <button type="button" class="btn-secondary btn-locked" disabled aria-disabled="true">
+            <span class="lock-icon" aria-hidden="true">🔒</span> Visit the showroom
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-render-wrap">
+      <img src="img/tooly-orange-hero.jpg"
+           alt="A Tooly home in a Florida backyard — orange metal roof, orange door, wood siding, surrounded by palms."
+           class="hero-render" />
+    </div>
+  </div>
+
+  <div class="stat-chip-wrap">
+    <div class="stat-chip">
+      <div>
+        <div class="label">PRICE</div>
+        <div class="value">$100k</div>
+        <div class="sub">furnished, finished</div>
+      </div>
+      <div>
+        <div class="label">SIZE</div>
+        <div class="value">264 sq ft</div>
+        <div class="sub">optimized space</div>
+      </div>
+      <div>
+        <div class="label">RATED</div>
+        <div class="value">Cat 5</div>
+        <div class="sub">concrete and steel</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee">
+  A HOUSE SHOULD NOT COST YOUR ENTIRE LIFE  ·  A HOUSE SHOULD NOT COST YOUR ENTIRE LIFE  ·  A HOUSE SHOULD NOT COST YOUR ENTIRE LIFE
+</div>
+
+<!-- ============ THE MOMENT (manifesto) ============ -->
+<section class="manifesto-section" aria-label="Why now is the moment for Tooly">
+  <div class="manifesto-inner">
+    <h2 class="manifesto-closer">
+      Real estate investments,<br/>finally made affordable.
+    </h2>
+
+    <p class="manifesto-wantyou">
+      You want Tooly, and Tooly wants you.
+    </p>
+
+    <p class="manifesto-body">
+      The Florida Government is <strong>slashing zoning tape</strong> and <strong>accelerating approvals</strong> to fight the housing crisis.
+    </p>
+
+    <p class="manifesto-body">
+      Homeowners crave <strong>cash flow</strong> and <strong>economic freedom</strong>.
+    </p>
+
+    <p class="manifesto-body" style="margin-bottom:0;">
+      Locals just want to <strong>survive</strong> in their own zip codes, while tenants deserve <strong>beauty</strong> without crippling rent.
+    </p>
+  </div>
+</section>
+
+<!-- ============ SECTION 01: STEP INSIDE ============ -->
+<section class="section" id="house">
+  <div class="section-grid">
+    <div>
+      <div class="section-label">SECTION 01</div>
+      <div class="section-tag">Step inside</div>
+    </div>
+    <div>
+      <h2>Small is not<br/>a sacrifice. It's<br/>an upgrade.</h2>
+      <p>Walk into a Tooly and you'll notice what isn't there. No wasted hallway. Optimized closet space. No second bathroom that nobody uses. What's left is what you actually live in: a kitchen that works as hard as a chef's line, considered storage in every corner, finishes that age the way good materials are supposed to age.</p>
+      <p style="margin-bottom:24px;">We didn't shrink a normal house. We built a small one on purpose.</p>
+      <div class="floorplan-frame">
+        <img src="img/tooly-floorplan.jpg"
+             alt="A 3D cutaway of a Tooly home showing the kitchen, dining area, living room, bedroom, bathroom, and storage." />
+        <div class="floorplan-caption">FULL FLOORPLAN · KITCHEN · DINING · BEDROOM · BATH</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE TOOLY KITCHEN ============ -->
+<section class="kitchen-section">
+  <div class="kitchen-card">
+    <div class="kitchen-eyebrow">THE TOOLY KITCHEN</div>
+    <h3>Built in. Optimized.</h3>
+
+    <div class="kitchen-grid">
+      <div>
+        <!-- KITCHEN IMAGE - swaps between the two real renders -->
+        <img id="kitchen-image"
+             src="img/kitchen-orange.jpg"
+             alt="The Tooly kitchen in sunset orange" />
+
+        <div class="kitchen-color-label">KITCHEN COLOR</div>
+        <div class="kitchen-swatches">
+          <button class="ks active" data-color="orange" data-name="Sunset Orange" style="background:#C25831;" aria-label="Sunset Orange"></button>
+          <button class="ks"        data-color="green"  data-name="Forest Green"  style="background:#2D4A2A;" aria-label="Forest Green"></button>
+        </div>
+        <div id="kitchen-name">SUNSET ORANGE</div>
+      </div>
+
+      <div>
+        <p class="kitchen-copy">A real kitchen. Range, oven, microwave, fridge, sink — everything your kitchen needs and nothing you don't. Honest materials, the layout is considered, and every surface earns its place.</p>
+        <p class="kitchen-copy" style="font-size:14px;font-style:italic;margin-top:16px;">Every Tooly ships in a single colorway — the kitchen color you pick is the door and roof color too.</p>
+        <div class="kitchen-standard">STANDARD ON EVERY TOOLY</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEXTURE BAND DIVIDER ============ -->
+<section class="texture-band" aria-label="Built to outlive you">
+  <div class="texture-band-content">
+    <p class="texture-band-line">Built to outlive you.</p>
+  </div>
+</section>
+
+<!-- ============ EVERY ANGLE ============ -->
+<section class="angles-section" aria-label="The Tooly from every angle">
+  <div class="angles-head">
+    <div class="angles-eyebrow">Every angle</div>
+    <h2>Two colorways.<br/>From every side.</h2>
+    <p class="angles-sub">Sunset orange or forest green — same house, same price, same hurricane-rated concrete underneath.</p>
+  </div>
+
+  <div class="angles-grid">
+    <div class="angle-card">
+      <img src="img/tooly-green-twisted.jpg"
+           alt="A forest-green Tooly in a Florida backyard, three-quarter view with palms and a fenced garden." />
+      <div class="angle-label">Forest Green · In context</div>
+    </div>
+    <div class="angle-card">
+      <img src="img/tooly-orange-twisted.jpg"
+           alt="A sunset-orange Tooly in a Florida backyard, three-quarter view with palms and a fenced garden." />
+      <div class="angle-label">Sunset Orange · In context</div>
+    </div>
+    <div class="angle-card">
+      <img src="img/tooly-green-profile.jpg"
+           alt="Side profile of a forest-green Tooly, showing the wood siding and stone accent panel." />
+      <div class="angle-label">Forest Green · Side profile</div>
+    </div>
+    <div class="angle-card">
+      <img src="img/tooly-orange-profile.jpg"
+           alt="Side profile of a sunset-orange Tooly, showing the wood siding and stone accent panel." />
+      <div class="angle-label">Sunset Orange · Side profile</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 02: HOW IT WORKS ============ -->
+<section class="section">
+  <div class="section-grid">
+    <div>
+      <div class="section-label">SECTION 02</div>
+      <div class="section-tag">How it works</div>
+    </div>
+    <div>
+      <h2>Four steps. No surprises.</h2>
+      <p style="color:#5F5E5A;margin-bottom:28px;">From your first email to your keys: about fifteen weeks, end to end.</p>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-meta">FREE · ~1 WEEK</div>
+          <div class="step-title">Check your lot</div>
+          <div class="step-body">Tell us your address. We run zoning, flood maps, and HOA. If a Tooly is legal where you live, we'll tell you. Free.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-meta">$5,000 NON-REFUNDABLE · 8 WEEKS</div>
+          <div class="step-title">Feasibility study</div>
+          <div class="step-body">Our architects survey your lot, soil-test, and draw real construction plans. We submit the permit package and shepherd it through approval. Eight weeks covers the full cycle — drawings, submission, and the wait for sign-off.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-meta">6 WEEKS · IN BUILD</div>
+          <div class="step-title">We assemble it</div>
+          <div class="step-body">From the moment your permit is approved: four weeks of factory build at Sailed Homes — same crew, same quality, every unit — plus two weeks to coordinate and program your on-site installation date.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-meta">2 DAYS · KEYS</div>
+          <div class="step-title">Installed &amp; financed</div>
+          <div class="step-body">Trucked to your lot. Anchored, sealed, utilities tied in. Concrete poured on-site. The $100k home is financeable through ADU-friendly partner banks. Recommended lenders coming soon.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 03: CONFIGURATOR ============ -->
+<section class="configurator-section" id="configure">
+  <div class="section-grid">
+    <div>
+      <div class="section-label">SECTION 03</div>
+      <div class="section-tag">Make it yours</div>
+    </div>
+    <div>
+      <h2>Configure a Tooly.</h2>
+      <p>One choice. Pick your colorway — kitchen, door, and roof all match. The price stays at $100,000.</p>
+
+      <div class="configurator-card">
+        <div class="configurator-grid">
+          <div>
+            <div class="config-preview">
+              <img id="config-render"
+                   src="img/tooly-orange-exterior.png"
+                   alt="A Tooly home in sunset orange." />
+            </div>
+
+            <div class="config-section">
+              <div class="config-label">UNIT COLOR</div>
+              <div class="config-swatches">
+                <button class="config-swatch unit-swatch active"
+                        data-color="orange"
+                        style="background:#C25831;"
+                        aria-label="Sunset Orange"></button>
+                <button class="config-swatch unit-swatch"
+                        data-color="green"
+                        style="background:#2D4A2A;"
+                        aria-label="Forest Green"></button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="config-label">YOUR TOOLY</div>
+            <table class="summary-table">
+              <tr><td>Colorway</td><td class="value-col" id="summary-color">Sunset Orange</td></tr>
+              <tr><td>Walls</td><td class="value-col">Wood Brown</td></tr>
+              <tr><td>Stone accent</td><td class="value-col">Standard</td></tr>
+              <tr><td>Kitchen, door, roof</td><td class="value-col">Matched</td></tr>
+              <tr class="total-row"><td>Total</td><td class="value-col total-amount">$100,000</td></tr>
+            </table>
+            <button class="reserve-btn" type="button" onclick="openReserveForm()">Reserve this Tooly →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 04: A SHORT HISTORY ============ -->
+<section class="history-section">
+  <div class="section-grid">
+    <div>
+      <div class="section-label section-label-light">SECTION 04</div>
+      <div class="section-tag section-tag-light">A short history</div>
+    </div>
+    <div>
+      <h2>Older than America.<br/>Older than English.<br/>Concrete works.</h2>
+
+      <p class="history-lead">The Pantheon was finished in 126 A.D. Two thousand winters. Nine million tourists a year. Zero structural repairs. Hadrian's contractors got it right the first time.</p>
+
+      <p class="history-lead">Concrete is not a new idea. It's the oldest serious idea humans have ever had about building things that last. We still haven't fully figured out how the Romans did it.</p>
+
+      <div class="lumber-row">
+        <p class="history-staccato">Lumber rots.<br/>Lumber burns.<br/>Lumber gives up in a hurricane.<br/><span class="staccato-end">Concrete sits there.</span></p>
+
+        <div class="lumber-demo" id="lumber-demo" onclick="igniteLumber()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();igniteLumber();}" role="button" tabindex="0" aria-label="Tap to set the lumber on fire">
+          <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- LOGS (drawn first so flames render on top) -->
+            <g class="logs">
+              <!-- Back-left log, angled up -->
+              <g transform="translate(40, 168) rotate(-22)">
+                <rect class="plank plank-top" x="0" y="-10" width="105" height="20" rx="10"
+                      fill="#8B5A3C" stroke="#2A1810" stroke-width="2.5"/>
+                <ellipse class="plank-grain" cx="3" cy="0" rx="6.5" ry="8" fill="#D9A576" stroke="#2A1810" stroke-width="2"/>
+                <ellipse cx="3" cy="0" rx="3" ry="4" fill="none" stroke="#3D2817" stroke-width="1.2"/>
+              </g>
+
+              <!-- Back-right log, angled up the other way -->
+              <g transform="translate(135, 168) rotate(22)">
+                <rect class="plank plank-mid" x="0" y="-10" width="105" height="20" rx="10"
+                      fill="#7A4A2E" stroke="#2A1810" stroke-width="2.5"/>
+                <ellipse class="plank-grain" cx="102" cy="0" rx="6.5" ry="8" fill="#B58659" stroke="#2A1810" stroke-width="2"/>
+                <ellipse cx="102" cy="0" rx="3" ry="4" fill="none" stroke="#3D2817" stroke-width="1.2"/>
+              </g>
+
+              <!-- Front horizontal log -->
+              <g transform="translate(38, 186) rotate(-2)">
+                <rect class="plank plank-bottom" x="0" y="-11" width="164" height="22" rx="11"
+                      fill="#A56B43" stroke="#2A1810" stroke-width="2.5"/>
+                <ellipse class="plank-grain" cx="4" cy="0" rx="7" ry="9" fill="#E0B485" stroke="#2A1810" stroke-width="2"/>
+                <ellipse cx="4" cy="0" rx="3.2" ry="4.5" fill="none" stroke="#3D2817" stroke-width="1.2"/>
+                <ellipse class="plank-grain" cx="160" cy="0" rx="7" ry="9" fill="#C99868" stroke="#2A1810" stroke-width="2"/>
+                <ellipse cx="160" cy="0" rx="3.2" ry="4.5" fill="none" stroke="#3D2817" stroke-width="1.2"/>
+              </g>
+            </g>
+
+            <!-- FLAMES (hidden until burning) -->
+            <g class="flames">
+              <!-- Big outer red flame with wavy tongues -->
+              <path class="flame f1"
+                    d="M 100,162
+                       C 70,150 58,118 80,92
+                       C 84,108 96,100 90,75
+                       C 102,90 112,75 108,45
+                       C 122,60 132,45 128,18
+                       C 142,38 152,38 148,60
+                       C 162,72 168,98 160,128
+                       C 148,156 124,170 100,162 Z"
+                    fill="#E74C3C"
+                    stroke="#2A1810"
+                    stroke-width="3"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"/>
+
+              <!-- Inner yellow flame -->
+              <path class="flame f2"
+                    d="M 108,152
+                       C 90,142 84,118 100,92
+                       C 104,106 114,98 110,78
+                       C 120,90 128,76 124,50
+                       C 134,64 142,60 138,82
+                       C 148,95 148,120 132,148
+                       C 122,156 114,154 108,152 Z"
+                    fill="#FFC93F"
+                    stroke="#2A1810"
+                    stroke-width="2"
+                    stroke-linejoin="round"/>
+
+              <!-- Bright core -->
+              <path class="flame f3"
+                    d="M 118,140
+                       C 108,130 106,110 116,92
+                       C 120,102 126,95 124,80
+                       C 132,90 134,98 132,112
+                       C 134,128 128,138 118,140 Z"
+                    fill="#FFEC8B"
+                    stroke="none"/>
+
+              <!-- Floating embers -->
+              <circle class="ember e1" cx="55"  cy="80"  r="3"   fill="#FF6B35"/>
+              <circle class="ember e2" cx="185" cy="55"  r="2.5" fill="#FFD23F"/>
+              <circle class="ember e3" cx="45"  cy="45"  r="2"   fill="#FF6B35"/>
+              <circle class="ember e4" cx="195" cy="100" r="2.5" fill="#FFD23F"/>
+              <circle class="ember e5" cx="200" cy="30"  r="2"   fill="#FF6B35"/>
+            </g>
+          </svg>
+          <div class="lumber-hint" id="lumber-hint">tap the lumber</div>
+        </div>
+      </div>
+
+      <p class="history-closing">A Tooly is built from poured concrete. Hurricane-rated. Sealed. Reinforced. Designed to outlive its first owner, its second owner, and probably its third. It is not a tiny home. It is not a trailer. It is the same idea Hadrian had, with better insulation and a working dishwasher.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIFESTYLE BAND ============ -->
+<section class="lifestyle-band" aria-label="A Tooly in a Florida backyard">
+  <div class="lifestyle-band-inner">
+    <p class="lifestyle-eyebrow">This is the backyard</p>
+    <img src="img/tooly-green-backyard.jpg"
+         alt="A forest-green Tooly tucked into a lush Florida backyard, beneath oak trees draped with Spanish moss, with tropical plants in front and a neighbor's bungalow visible behind."
+         class="lifestyle-image"
+         loading="lazy" />
+    <p class="lifestyle-caption">UNDER THE OAKS · FOREST GREEN COLORWAY</p>
+  </div>
+</section>
+
+<!-- ============ SECTION 05: RENT IT OUT ============ -->
+<section class="rental-section">
+  <div class="section-grid">
+    <div>
+      <div class="section-label section-label-teal">SECTION 05</div>
+      <div class="section-tag section-tag-light">Rent it out</div>
+    </div>
+    <div>
+      <div class="rental-eyebrow">THE TOOL FOR FINANCIAL FREEDOM</div>
+      <h2>Earn $1,200+ a month<br/>from the dead grass<br/>in your backyard.</h2>
+
+      <p>A Tooly is not just a house. It's a developer's tool, in a homeowner's backyard. The lot you mow every Saturday — the strip of patchy St. Augustine grass between your fence and your shed — is a check, every month, waiting for someone to write it.</p>
+
+      <p style="margin-bottom:32px;">Most of our owners do exactly that. They put a Tooly in the backyard. They rent it to a teacher, a nurse, a firefighter, a graduate student, a grandmother who wants her family close. The mortgage pays itself. The cashflow is theirs to keep. And one more Florida family gets to stay in the neighborhood they were born in.</p>
+
+      <div class="rental-mathchip">
+        <div class="rental-eyebrow" style="margin-bottom:14px;">A TYPICAL MONTH FOR A TOOLY OWNER</div>
+        <div class="math-row">
+          <div class="math-block">
+            <div class="label">RENT COLLECTED</div>
+            <div class="value">$1,500–$1,900</div>
+            <div class="sub">30% of FL median income</div>
+          </div>
+          <div class="math-op">−</div>
+          <div class="math-block">
+            <div class="label">FINANCING COST</div>
+            <div class="value">~$500</div>
+            <div class="sub">Through your bank</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin:18px 0;font-size:24px;color:#9FE1CB;font-weight:500;">=</div>
+        <div class="math-result">
+          <div class="label">YOURS TO KEEP</div>
+          <div class="value">$1,200+</div>
+          <div class="sub">Every month, without lifting a finger</div>
+        </div>
+        <div class="math-explainer">
+          <strong>How we landed on this number.</strong> Florida's median household income is $77,700. The federal definition of affordable housing caps rent at 30% of income, which for a Florida household at AMI is roughly $1,943 a month. Toolys typically rent in the $1,500–$1,900 band — comfortably affordable for a working-class tenant, comfortably profitable for the owner.
+        </div>
+      </div>
+
+      <div class="developer-block">
+        <h3>Become a developer.<br/>Without the developer's budget.</h3>
+        <p>Real estate development used to be a closed game. You needed a million dollars, a banker, a permit attorney, and a year of your life to put one rental unit on the ground. Tooly opens the game up. $100,000 home, about fifteen weeks, no construction crew on your property for six months, no surprises. The smallest possible barrier to entry into the asset class that has built more American wealth than any other.</p>
+      </div>
+
+      <div class="pillar">
+        <div class="label">HELP YOURSELF</div>
+        <div class="body">Cashflow that doesn't require a side hustle, a second job, or a single hour of your weekend. And your lot value rises ~30% the moment a second cashflowing asset is sitting on it — equity created, free.</div>
+      </div>
+      <div class="pillar">
+        <div class="label">HELP YOUR NEIGHBOR</div>
+        <div class="body">A nurse, a teacher, a line cook gets to live in the neighborhood they grew up in instead of an hour away from the hospital, the school, or the kitchen where they spend their working hours.</div>
+      </div>
+      <div class="pillar">
+        <div class="label">HELP YOUR STATE</div>
+        <div class="body">Florida needs hundreds of thousands of new affordable units to keep its workforce housed. Each Tooly is one more on the right side of that ledger, without razing a single existing block.</div>
+      </div>
+
+      <div class="why-block">
+        <div style="font-size:11px;letter-spacing:3px;color:#FFD37E;margin-bottom:14px;">WHY THIS MATTERS</div>
+        <h4 style="font-size:20px;">Density without gentrification.</h4>
+        <p style="font-size:14px;line-height:1.65;margin-bottom:14px;">Every other answer to the housing crisis involves tearing down what's already there. A developer buys a working-class block, knocks it flat, builds a five-over-one with a yoga studio on the ground floor, and the people who lived there move thirty miles away.</p>
+        <p style="font-size:14px;line-height:1.65;margin-bottom:0;">Toolys go in <em>existing</em> backyards on <em>existing</em> lots owned by <em>existing</em> homeowners. Nobody gets displaced. The block stays the block. The supply goes up. The rent goes down. The kid who fixed your AC last August can still afford to live three blocks from his mother.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <img src="img/tooly-logo.png" alt="Tooly" class="footer-logo" />
+      <p class="footer-info">Tooly LLC · Miami, Florida<br/>contact@toolystructures.com</p>
+    </div>
+    <div class="footer-tagline">
+      <div class="big">Step into<br/>the future.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ RESERVE FORM MODAL ============ -->
+<div class="modal-backdrop" id="reserve-modal" onclick="if(event.target===this) closeReserveForm()">
+  <div class="modal" role="dialog" aria-labelledby="reserve-modal-title" aria-modal="true">
+    <button type="button" class="modal-close" onclick="closeReserveForm()" aria-label="Close form">×</button>
+
+    <div id="reserve-form-step">
+      <div class="modal-eyebrow">RESERVE A TOOLY</div>
+      <h2 id="reserve-modal-title">Tell us about your lot.</h2>
+      <p class="modal-intro">We'll get back to you within 48 hours with a free desktop review of whether a Tooly is legal where you live.</p>
+
+      <!--
+        ============ WEB3FORMS INTEGRATION ============
+        Submissions are routed through Web3Forms (https://web3forms.com) to
+        contact@toolystructures.com. The access_key below is tied to the
+        Tooly Web3Forms account; rotate it in the Web3Forms dashboard if
+        it ever leaks.
+
+        ============ SPAM PROTECTION (three layers) ============
+        1. HONEYPOT — the hidden `botcheck` checkbox. Bots fill every field;
+           Web3Forms drops the submission if this is non-empty.
+        2. CLOUDFLARE TURNSTILE — modern, privacy-friendly captcha. The
+           widget is invisible to most real users; bots have to solve a
+           challenge they can't.
+        3. SERVER-SIDE TURNSTILE VALIDATION — done by Web3Forms IF you
+           paste your Turnstile *secret key* into the Web3Forms dashboard
+           (Settings → Spam Protection → Cloudflare Turnstile).
+
+        To finish Turnstile setup:
+          a. Sign in at https://dash.cloudflare.com → Turnstile → Add Site
+          b. Domain: toolystructures.com (and your *.github.io URL too)
+          c. Widget type: "Managed" (recommended)
+          d. Copy the SITE KEY → paste into data-sitekey below
+          e. Copy the SECRET KEY → paste into the Web3Forms dashboard
+        Until you do (d), this uses Cloudflare's test key, which always
+        passes — your form works but has no real Turnstile protection.
+
+        To change the recipient email, log into web3forms.com and update
+        it under Email Configuration — no code change needed.
+      -->
+      <form
+        class="reserve-form"
+        id="reserve-form"
+        action="https://api.web3forms.com/submit"
+        method="POST"
+        onsubmit="handleReserveSubmit(event)"
+      >
+        <!-- Web3Forms access key — required -->
+        <input type="hidden" name="access_key" value="771e2aee-e235-4471-bb98-3729b756df6f" />
+
+        <!-- Email customization (overrides the dashboard defaults) -->
+        <input type="hidden" name="subject" value="New Tooly Reservation — Lot Inquiry" />
+        <input type="hidden" name="from_name" value="Tooly Website" />
+
+        <!-- LAYER 1: Honeypot field. Bots fill every field they see;
+             Web3Forms drops the submission if this is non-empty. Hidden from humans. -->
+        <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off" />
+
+        <div class="form-error" id="reserve-form-error" role="alert"></div>
+
+        <div class="form-field">
+          <label for="rf-email">EMAIL *</label>
+          <input id="rf-email" name="email" type="email" required placeholder="you@example.com" />
+        </div>
+
+        <div class="form-field">
+          <label for="rf-location">CITY OR TOWN *</label>
+          <input id="rf-location" name="location" type="text" required placeholder="Hialeah, FL" />
+        </div>
+
+        <div class="form-field">
+          <label for="rf-payment">PAYMENT TYPE *</label>
+          <select id="rf-payment" name="payment_type" required>
+            <option value="">Select one…</option>
+            <option value="Cash">Cash</option>
+            <option value="Loan">Loan through my bank</option>
+            <option value="Not sure yet">Not sure yet</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="rf-message">QUESTIONS OR COMMENTS</label>
+          <textarea id="rf-message" name="message" placeholder="Anything you'd like us to know about your lot, your timeline, or your plans for the Tooly."></textarea>
+        </div>
+
+        <!-- LAYER 2: Cloudflare Turnstile widget. The script in <head> auto-detects
+             this div and renders the captcha. On success it injects a hidden field
+             named cf-turnstile-response that Web3Forms validates server-side.
+
+             Site key below is the live Tooly Turnstile site key. The matching
+             SECRET key lives in the Web3Forms dashboard under Spam Protection —
+             never paste the secret key into HTML. -->
+        <div class="turnstile-wrap">
+          <div class="cf-turnstile"
+               data-sitekey="0x4AAAAAADONnx7oich5EdqR"
+               data-theme="light"
+               data-size="normal"></div>
+        </div>
+
+        <button type="submit" class="form-submit" id="reserve-submit-btn">Send to Tooly →</button>
+      </form>
+    </div>
+
+    <div id="reserve-thank-you" class="form-thank-you" style="display:none;">
+      <h3>Thanks. We'll be in touch.</h3>
+      <p>Your message is on its way to the Tooly team at contact@toolystructures.com. We respond within 48 hours, usually faster.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============ INTERACTIVE LUMBER DEMO ============
+  // Toggle the burning state on the lumber cartoon in Section 04.
+  // Echoes the staccato line: lumber burns, concrete sits there.
+  function igniteLumber() {
+    var demo = document.getElementById('lumber-demo');
+    var hint = document.getElementById('lumber-hint');
+    if (!demo || !hint) return;
+    var burning = demo.classList.toggle('burning');
+    hint.textContent = burning ? 'concrete sits there.' : 'tap the lumber';
+  }
+
+  // KITCHEN COLOR SWAP — swaps the kitchen render based on swatch click
+  (function () {
+    var img = document.getElementById('kitchen-image');
+    var nameLabel = document.getElementById('kitchen-name');
+    var swatches = document.querySelectorAll('.ks');
+
+    swatches.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var slug = btn.getAttribute('data-color');
+        var name = btn.getAttribute('data-name');
+        img.src = 'img/kitchen-' + slug + '.jpg';
+        img.alt = 'The Tooly kitchen in ' + name.toLowerCase();
+        nameLabel.textContent = name.toUpperCase();
+        swatches.forEach(function (s) { s.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+  })();
+
+  // EXTERIOR CONFIGURATOR — single unit color drives roof + door + matching render
+  (function () {
+    var img = document.getElementById('config-render');
+    var colorLabel = document.getElementById('summary-color');
+    var swatches = document.querySelectorAll('.unit-swatch');
+
+    var renderMap = {
+      'orange': { src: 'img/tooly-orange-exterior.png', alt: 'A Tooly home in sunset orange.', label: 'Sunset Orange' },
+      'green':  { src: 'img/tooly-green-exterior.png',  alt: 'A Tooly home in forest green.',  label: 'Forest Green' }
+    };
+
+    swatches.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var color = btn.getAttribute('data-color');
+        var entry = renderMap[color];
+        if (!entry) return;
+        img.src = entry.src;
+        img.alt = entry.alt;
+        colorLabel.textContent = entry.label;
+        swatches.forEach(function (s) { s.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+  })();
+
+  // RESERVE FORM MODAL — open, close, submit
+  function openReserveForm() {
+    var modal = document.getElementById('reserve-modal');
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // Focus the first field so keyboard users can start typing immediately
+    setTimeout(function () {
+      var firstField = document.getElementById('rf-email');
+      if (firstField) firstField.focus();
+    }, 50);
+  }
+
+  function closeReserveForm() {
+    var modal = document.getElementById('reserve-modal');
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeReserveForm();
+  });
+
+  // ============ WEB3FORMS SUBMISSION HANDLER ============
+  // Posts the form data to Web3Forms via fetch so we can stay on the page
+  // and show a custom thank-you state. Web3Forms returns JSON; we check
+  // the `success` flag and either show the thank-you or surface an error.
+  //
+  // Before submitting we verify the Cloudflare Turnstile token exists. If
+  // the user hasn't completed the challenge (or the widget failed to load),
+  // we block submission and prompt them. Web3Forms also validates the token
+  // server-side IF the Turnstile secret key is set in the Web3Forms dashboard.
+  function handleReserveSubmit(event) {
+    event.preventDefault();
+
+    var form = event.target;
+    var submitBtn = document.getElementById('reserve-submit-btn');
+    var errorBox = document.getElementById('reserve-form-error');
+    var originalBtnText = submitBtn.textContent;
+
+    // Reset any prior error
+    errorBox.classList.remove('show');
+    errorBox.textContent = '';
+
+    var formData = new FormData(form);
+
+    // Verify Turnstile token is present. The Turnstile widget injects a
+    // hidden field named "cf-turnstile-response" once the challenge passes.
+    var turnstileToken = formData.get('cf-turnstile-response');
+    if (!turnstileToken) {
+      showFormError('Please complete the security check below the message field before submitting.');
+      return;
+    }
+
+    // Lock the button only after the pre-flight checks pass
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: formData
+    })
+    .then(function (response) { return response.json(); })
+    .then(function (data) {
+      if (data && data.success) {
+        showThankYou();
+      } else {
+        var msg = (data && data.message) ? data.message : 'Something went wrong on our end.';
+        showFormError(msg + ' You can also email us directly at contact@toolystructures.com.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        // Reset the Turnstile widget so the user can try again with a fresh token
+        if (window.turnstile && typeof window.turnstile.reset === 'function') {
+          window.turnstile.reset();
+        }
+      }
+    })
+    .catch(function (err) {
+      console.error('Form submission error:', err);
+      showFormError("We couldn't send your message — check your connection and try again, or email contact@toolystructures.com directly.");
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+      if (window.turnstile && typeof window.turnstile.reset === 'function') {
+        window.turnstile.reset();
+      }
+    });
+  }
+
+  function showFormError(message) {
+    var errorBox = document.getElementById('reserve-form-error');
+    errorBox.textContent = message;
+    errorBox.classList.add('show');
+  }
+
+  function showThankYou() {
+    document.getElementById('reserve-form-step').style.display = 'none';
+    document.getElementById('reserve-thank-you').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
