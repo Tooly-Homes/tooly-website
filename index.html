@@ -1,228 +1,3 @@
-
-Claude finished the response
-You said: you were walking me through the connection of contact@toolystructures.
-1778640817239_image.png
-you were walking me through the connection of contact@toolystructures.com email and the survey on the github website you helped me publish. As of now, we can see it's active and the access key in web3forms is: 771e2aee-e235-4471-bb98-3729b756df6f the attached is what I see in the web3forms website and my website in github is active and public
-
-10:54 PM
-Claude responded: Your Web3Forms configuration looks good — the email recipient is set, and you have the access key ready.
-
-Synthesized Web3Forms integration steps for GitHub-hosted survey form
-Synthesized Web3Forms integration steps for GitHub-hosted survey form
-Your Web3Forms configuration looks good — the email recipient is set, and you have the access key ready. Now you need to wire that access key into the form HTML on your GitHub-hosted site so submissions actually route to contact@toolystructures.com.
-
-Here's the form snippet with your access key baked in. Replace your current survey form's <form> element with this structure (keeping your own fields/labels/styling):
-
-html
-<form action="https://api.web3forms.com/submit" method="POST">
-  <!-- Required: your Web3Forms access key -->
-  <input type="hidden" name="access_key" value="771e2aee-e235-4471-bb98-3729b756df6f">
-
-  <!-- Optional: subject override and sender label (matches your Web3Forms dashboard defaults) -->
-  <input type="hidden" name="subject" value="New Survey Submission — Tooly Structures">
-  <input type="hidden" name="from_name" value="Tooly Structures Survey">
-
-  <!-- Your actual survey fields go here. Examples: -->
-  <label>Name
-    <input type="text" name="name" required>
-  </label>
-
-  <label>Email
-    <input type="email" name="email" required>
-  </label>
-
-  <label>Your feedback
-    <textarea name="message" rows="5" required></textarea>
-  </label>
-
-  <!-- Honeypot spam protection (leave empty, hide with CSS) -->
-  <input type="checkbox" name="botcheck" style="display:none;">
-
-  <button type="submit">Submit</button>
-</form>
-A few things worth knowing as you do this:
-
-The access key sitting in the HTML is normal — Web3Forms is designed that way, and the key only authorizes sending to the email you configured, so it can't be misused to redirect mail elsewhere. Still, anyone viewing source can see it, so don't reuse it for anything more sensitive.
-
-The name attribute on each input is what shows up in the email you receive. Whatever you name a field (e.g., name="favorite_feature") becomes the label in the notification, so make those readable.
-
-After you commit and push the change to GitHub, give Pages a minute or two to rebuild, then submit a test entry yourself. The first submission may trigger a confirmation email from Web3Forms — accept it if so.
-
-If you want submissions to land on a thank-you page after sending, fill in the Redirect URL field in the Web3Forms dashboard (currently empty in your screenshot) with something like https://toolystructures.com/thank-you.html or any page you have published. Otherwise, Web3Forms shows its default success page.
-
-Want to paste me your current form's HTML from the repo? I can rewrite it directly so you can drop it in without rebuilding from scratch.
-
-You said: attached is the code and the images that are uploaded to github.
-tooly-floorplan.jpg
-tooly-orange-profile.jpg
-tooly-green-exterior.png
-tooly-orange-twisted.jpg
-tooly-orange-exterior.png
-tooly-texture.jpg
-kitchen-orange.jpg
-tooly-green-profile.jpg
-tooly-green-twisted.jpg
-tooly-materials-detail.jpg
-tooly-orange-hero.jpg
-kitchen-green.jpg
-tooly-green-hero.jpg
-tooly-logo.png
-
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <title>Tooly — A house. Hundred grand. Built to last.</title> <meta name="description" content="264 square feet of poured concrete, hurricane-rated, furnish
-
-pasted
-
-attached is the code and the images that are uploaded to github. Alter the code to allow me to connect the website surveys to the contact@toolystructures.com email.
-
-11:00 PM
-Claude responded: I'll swap the Netlify Forms wiring out for Web3Forms with your access key.
-
-Analyzed form integration and reconfigured Web3Forms submission handler
-Analyzed form integration and reconfigured Web3Forms submission handler
-I'll swap the Netlify Forms wiring out for Web3Forms with your access key. Since your site is hosted on GitHub Pages, Netlify Forms wouldn't actually work anyway — Web3Forms is the right call here.
-
-Let me write the updated index.html for you.
-
-
-Created a file, read a file
-Created a file, read a file
-Done. Here's what changed and why:
-
-The form element itself now posts to https://api.web3forms.com/submit instead of pretending to be a Netlify form. The Netlify-specific attributes (data-netlify, netlify-honeypot, the hidden form-name field) are gone — they did nothing on GitHub Pages anyway. In their place: your access_key hidden input, a subject line that'll show up in your inbox ("New Tooly Reservation — Lot Inquiry"), a from_name field, and Web3Forms' botcheck honeypot for spam.
-
-The submission handler was rewritten to actually talk to the Web3Forms API. The old version had a "local file detection" hack because Netlify Forms can't be tested locally — that's no longer needed. The new version sends the form via fetch, reads the JSON response, shows the thank-you on success, and shows an inline error message (with a fallback to your email address) if anything fails. The submit button also disables itself during sending so impatient users can't double-fire.
-
-One small UX add: a red error banner that appears at the top of the form if the submission fails for any reason, so users aren't left wondering what happened.
-
-To deploy:
-
-Replace the existing index.html in your GitHub repo with this file, commit, and push. Give GitHub Pages a minute to rebuild, then submit a test entry from the live site. The first one will land in contact@toolystructures.com — check spam folder too, since the very first delivery sometimes gets filtered.
-
-One thing to be aware of: your access key (771e2aee-...) is visible in the page source. That's normal for Web3Forms — the key only authorizes sending mail to your configured recipient, so it can't be hijacked to redirect submissions elsewhere. But if you ever see spam volume tick up, you can rotate the key from the Web3Forms dashboard and just paste the new one into the value="..." attribute on line ~1130 of this file.
-
-Want me to also add reCAPTCHA on top of the honeypot for extra spam protection, or are you good with what's there?
-
-
-Index
-Code · HTML 
-You said: yes protect from spam.
-yes protect from spam.
-
-11:04 PM
-Claude responded: Good call.
-
-Deliberated spam protection methods and settled on Cloudflare Turnstile integration
-Deliberated spam protection methods and settled on Cloudflare Turnstile integration
-Good call. I'll layer Cloudflare Turnstile on top of the existing honeypot — it's free, often invisible to real users (no "click all the crosswalks"), privacy-friendly, and Web3Forms supports it natively.
-
-Let me make the edits:
-
-
-Edited 3 files
-Edited 3 files
-Now update the submit handler to verify the Turnstile token before sending:
-
-
-Edited a file, read a file
-Edited a file, read a file
-Your form now has three layers of spam defense stacked:
-
-1. Honeypot (already there) — catches the dumb scraping bots that fill every field they see.
-
-2. Cloudflare Turnstile (new) — a modern captcha that's invisible to most real humans (no traffic-light puzzles). Bots that don't execute JavaScript can't get a token. Bots that do execute JS get rate-limited and challenged by Cloudflare's risk engine.
-
-3. Server-side token validation (new, optional but recommended) — Web3Forms re-checks the Turnstile token before sending the email, so even forged client submissions get rejected.
-
-One last setup step — you need to do this for real protection
-The file ships with Cloudflare's test site key (1x00000000000000000000AA), which always passes. Your form works today, but real bots can sail through until you swap it. Here's the 5-minute setup:
-
-Go to dash.cloudflare.com → sign up if you don't have an account (free).
-In the left sidebar, click Turnstile → Add Site.
-Site name: Tooly. Domain: add both toolystructures.com and your *.github.io domain (e.g. yourusername.github.io).
-Widget mode: Managed (recommended — Cloudflare decides when to show a challenge).
-Hit Create. Cloudflare gives you two keys: a Site Key and a Secret Key.
-In the index.html file, find this line (around line 1175):
-html
-   data-sitekey="1x00000000000000000000AA"
-Replace 1x00000000000000000000AA with your real Site Key. 7. Go to web3forms.com → log in → your form's settings → Spam Protection → Cloudflare Turnstile → paste your Secret Key there. Save.
-
-After those steps, commit and push to GitHub. Submit a test entry yourself — you should briefly see the Turnstile widget render (and usually auto-resolve in under a second). The email should land in contact@toolystructures.com as before.
-
-What you'll see if something goes wrong
-If a user tries to submit without completing the captcha (rare — it auto-completes for most people), they get an inline message: "Please complete the security check below the message field before submitting." If the network fails or Web3Forms returns an error, the widget resets so they can try again with a fresh token.
-
-The site key is safe to expose in your HTML — that's by design. The secret key stays in the Web3Forms dashboard and never leaves their server. Don't paste the secret key into the HTML by mistake.
-
-Want me to also set up an auto-reply email so people who submit the form get an immediate "we got your message" confirmation? Web3Forms supports that with one more hidden field.
-
-
-Index
-Code · HTML 
-You said: okay so I paste this code into the Github repo replacing the other index file?
-okay so I paste this code into the Github repo replacing the other index file? What do i need to do in web3forms? nothing anymore?
-
-11:11 PM
-Claude responded: Right — let me make this crystal clear because there are two paths and you get to pick.
-
-Synthesized deployment steps and clarified Web3Forms configuration requirements
-Synthesized deployment steps and clarified Web3Forms configuration requirements
-Right — let me make this crystal clear because there are two paths and you get to pick.
-
-Path A: Just paste and go (form works, basic spam protection)
-Replace your index.html in the GitHub repo with this new one.
-Commit and push.
-Done. Nothing else to do in Web3Forms.
-The form will work. You'll have the honeypot catching dumb bots. Cloudflare Turnstile will render but it's running on a test key that always passes, so it's basically decorative against real spammers.
-
-If you barely get any traffic right now, this is fine for a couple weeks while you watch what comes in. Upgrade when (or if) spam starts showing up.
-
-Path B: Full spam armor (5 more minutes of setup)
-Do Path A first, then:
-
-Cloudflare side (~3 min)
-Sign up at dash.cloudflare.com (free, no credit card)
-Left sidebar → Turnstile → Add Site
-Domain: add both toolystructures.com and your GitHub Pages URL (looks like yourusername.github.io)
-Widget mode: Managed
-Hit Create → it gives you a Site Key and a Secret Key
-Update your HTML (~30 sec)
-In index.html, search for 1x00000000000000000000AA
-Replace it with your real Site Key
-Commit and push
-Web3Forms side (~30 sec)
-Log into web3forms.com
-Open your form's settings → Spam Protection → Cloudflare Turnstile
-Paste your Secret Key there → Save
-That's it. After Path B, fake submissions get rejected before they ever reach your inbox.
-
-My honest recommendation: Do Path A right now so the form is live. Then if you want, do Path B this evening or tomorrow. There's no rush — the honeypot alone blocks the cheap automated stuff, and you can always tighten the screws later when you see real traffic patterns.
-
-You said: provide the html file to download and replace the existing one in github
-provide the html file to download and replace the existing one in github
-
-11:13 PM
-Claude responded: Here's the file.
-
-Preparing the HTML file for download
-Preparing the HTML file for download
-Here's the file. Download it, then in your GitHub repo:
-
-Open your existing index.html
-Click the pencil icon (Edit) or delete the file and upload this one in its place
-Commit the change
-Give GitHub Pages a minute to rebuild, then test the form on your live site.
-
-
-Index
-Code · HTML 
-
-
-
-
-Claude is AI and can make mistakes. Please double-check responses.
-Index · HTML
-Copy
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -230,17 +5,17 @@ Copy
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Tooly — A house. Hundred grand. Built to last.</title>
 <meta name="description" content="264 square feet of poured concrete, hurricane-rated, furnished and finished. The future you were promised, on a payment plan you can actually meet." />
- 
+
 <!-- Preload the default hero render so the page paints fast -->
 <link rel="preload" as="image" href="img/tooly-orange-hero.jpg" />
- 
+
 <!-- Cloudflare Turnstile — invisible-when-possible captcha for the reserve form.
      Loads async so it doesn't block page paint. Renders inside the modal form. -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
- 
+
 <style>
   * { box-sizing: border-box; }
- 
+
   html, body {
     margin: 0;
     padding: 0;
@@ -249,14 +24,14 @@ Copy
     color: #1A1A1A;
     -webkit-font-smoothing: antialiased;
   }
- 
+
   img { max-width: 100%; display: block; }
   button { font-family: inherit; }
   em { font-style: italic; }
   a { color: inherit; }
- 
+
   .container { max-width: 1200px; margin: 0 auto; }
- 
+
   /* HEADER */
   .header { background: #3A6EA5; }
   .nav {
@@ -289,7 +64,7 @@ Copy
     letter-spacing: 0.5px;
     text-decoration: none;
   }
- 
+
   /* HERO */
   .hero {
     padding: 56px 40px 56px;
@@ -355,7 +130,7 @@ Copy
     display: inline-block;
     filter: grayscale(1);
   }
- 
+
   /* RESERVE FORM MODAL */
   .modal-backdrop {
     position: fixed;
@@ -570,7 +345,7 @@ Copy
     font-size: 11px;
     color: #FAEEDA;
   }
- 
+
   /* MARQUEE */
   .marquee {
     background: #F5F0E6;
@@ -585,7 +360,7 @@ Copy
     border-top: 1px solid rgba(245,128,65,0.3);
     border-bottom: 1px solid rgba(245,128,65,0.3);
   }
- 
+
   /* SECTION SHARED */
   .section { padding: 64px 40px; }
   .section-grid {
@@ -625,7 +400,7 @@ Copy
     margin: 0 0 16px;
     max-width: 540px;
   }
- 
+
   /* Floorplan frame: dark card that holds the section-01 cutaway render.
      Same #0E0E0E surface as the Every Angle section and the configurator
      preview — black absorbs the edge halo from the background-removed PNG,
@@ -649,7 +424,7 @@ Copy
     text-align: center;
     margin-top: 16px;
   }
- 
+
   /* SECTION 02: HOW IT WORKS */
   .steps {
     display: grid;
@@ -698,7 +473,7 @@ Copy
     line-height: 1.6;
     color: #5F5E5A;
   }
- 
+
   /* THE TOOLY KITCHEN */
   .kitchen-section { background: #2A1810; padding: 40px; }
   .kitchen-card {
@@ -780,7 +555,7 @@ Copy
     letter-spacing: 1px;
     font-weight: 500;
   }
- 
+
   /* SECTION 03: CONFIGURATOR */
   .configurator-section {
     background: #F58041;
@@ -869,7 +644,7 @@ Copy
     border: none;
     width: 100%;
   }
- 
+
   /* SECTION 04: HISTORY */
   .history-section {
     background: #2A1810;
@@ -938,7 +713,7 @@ Copy
     margin: 0;
     font-style: italic;
   }
- 
+
   /* ============ THE MOMENT (manifesto) ============
      Editorial pause between the historical context (Section 04) and
      the rental financial pitch (Section 05). Cream canvas sandwiched
@@ -1011,7 +786,7 @@ Copy
     max-width: 820px;
     margin: 0 auto;
   }
- 
+
   /* SECTION 05: RENT IT OUT */
   .rental-section {
     background: #2A6B5D;
@@ -1194,7 +969,7 @@ Copy
     flex-wrap: wrap;
   }
   .calc-cta .note { font-size: 12px; color: #9FE1CB; }
- 
+
   /* FOOTER */
   .footer { background: #1A1A1A; padding: 56px 40px; }
   .footer-grid {
@@ -1226,7 +1001,7 @@ Copy
     letter-spacing: -0.5px;
     line-height: 1.3;
   }
- 
+
   /* TEXTURE BAND DIVIDER */
   .texture-band {
     background-image: url('img/tooly-materials-detail.jpg');
@@ -1272,7 +1047,7 @@ Copy
     margin-right: auto;
     text-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
- 
+
   /* ============ EVERY ANGLE ============
      Showroom-style gallery on a dark canvas. The Profile renders sit
      on solid black so they melt seamlessly into the section background;
@@ -1343,7 +1118,7 @@ Copy
     text-transform: uppercase;
     font-weight: 500;
   }
- 
+
   /* RESPONSIVE */
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; padding: 40px 24px 0; gap: 24px; }
@@ -1376,7 +1151,7 @@ Copy
     .math-row { grid-template-columns: 1fr; }
     .math-op { padding: 8px 0; }
   }
- 
+
   @media (max-width: 600px) {
     .section, .configurator-section, .history-section, .rental-section {
       padding: 48px 24px;
@@ -1391,9 +1166,9 @@ Copy
   }
 </style>
 </head>
- 
+
 <body>
- 
+
 <!-- ============ HEADER + HERO ============ -->
 <header class="header">
   <nav class="nav">
@@ -1408,7 +1183,7 @@ Copy
     </div>
     <a href="#" onclick="openReserveForm(); return false;" class="nav-cta">Reserve →</a>
   </nav>
- 
+
   <div class="hero">
     <div class="hero-copy">
       <img src="img/tooly-logo.png" alt="Tooly" class="hero-logo-pill" />
@@ -1430,7 +1205,7 @@ Copy
            class="hero-render" />
     </div>
   </div>
- 
+
   <div class="stat-chip-wrap">
     <div class="stat-chip">
       <div>
@@ -1451,39 +1226,39 @@ Copy
     </div>
   </div>
 </header>
- 
+
 <!-- ============ MARQUEE ============ -->
 <div class="marquee">
   A HOUSE SHOULD NOT COST YOUR ENTIRE LIFE  ·  A HOUSE SHOULD NOT COST YOUR ENTIRE LIFE  ·  A HOUSE SHOULD NOT COST YOUR ENTIRE LIFE
 </div>
- 
+
 <!-- ============ THE MOMENT (manifesto) ============ -->
 <section class="manifesto-section" aria-label="Why now is the moment for Tooly">
   <div class="manifesto-inner">
     <div class="manifesto-eyebrow">The moment</div>
- 
+
     <p class="manifesto-body">
       The Florida Government is <strong>slashing zoning tape</strong> and <strong>accelerating approvals</strong> to fight the housing crisis.
     </p>
- 
+
     <p class="manifesto-body">
       Homeowners crave <strong>cash flow</strong> and <strong>economic freedom</strong>.
     </p>
- 
+
     <p class="manifesto-body">
       Locals just want to <strong>survive</strong> in their own zip codes, while tenants deserve <strong>beauty</strong> without crippling rent.
     </p>
- 
+
     <p class="manifesto-wantyou">
       You want Tooly, and Tooly wants you.
     </p>
- 
+
     <h2 class="manifesto-closer">
       Real estate investments,<br/>finally made affordable.
     </h2>
   </div>
 </section>
- 
+
 <!-- ============ SECTION 01: STEP INSIDE ============ -->
 <section class="section" id="house">
   <div class="section-grid">
@@ -1503,20 +1278,20 @@ Copy
     </div>
   </div>
 </section>
- 
+
 <!-- ============ THE TOOLY KITCHEN ============ -->
 <section class="kitchen-section">
   <div class="kitchen-card">
     <div class="kitchen-eyebrow">THE TOOLY KITCHEN</div>
     <h3>Built in. Optimized.</h3>
- 
+
     <div class="kitchen-grid">
       <div>
         <!-- KITCHEN IMAGE - swaps between the two real renders -->
         <img id="kitchen-image"
              src="img/kitchen-orange.jpg"
              alt="The Tooly kitchen in sunset orange" />
- 
+
         <div class="kitchen-color-label">KITCHEN COLOR</div>
         <div class="kitchen-swatches">
           <button class="ks active" data-color="orange" data-name="Sunset Orange" style="background:#C25831;" aria-label="Sunset Orange"></button>
@@ -1524,7 +1299,7 @@ Copy
         </div>
         <div id="kitchen-name">SUNSET ORANGE</div>
       </div>
- 
+
       <div>
         <p class="kitchen-copy">A real kitchen. Range, oven, microwave, fridge, sink — everything your kitchen needs and nothing you don't. Honest materials, the layout is considered, and every surface earns its place.</p>
         <p class="kitchen-copy" style="font-size:14px;font-style:italic;color:#5D4027;margin-top:16px;">Every Tooly ships in a single colorway — the kitchen color you pick is the door and roof color too.</p>
@@ -1533,7 +1308,7 @@ Copy
     </div>
   </div>
 </section>
- 
+
 <!-- ============ TEXTURE BAND DIVIDER ============ -->
 <section class="texture-band" aria-label="Tooly materials — stone and wood">
   <div class="texture-band-content">
@@ -1541,7 +1316,7 @@ Copy
     <p class="texture-band-line">Stone. Wood. Concrete. Built from things that age the right way.</p>
   </div>
 </section>
- 
+
 <!-- ============ EVERY ANGLE ============ -->
 <section class="angles-section" aria-label="The Tooly from every angle">
   <div class="angles-head">
@@ -1549,7 +1324,7 @@ Copy
     <h2>Two colorways.<br/>From every side.</h2>
     <p class="angles-sub">Sunset orange or forest green — same house, same price, same hurricane-rated concrete underneath. See it in context, then see it flat.</p>
   </div>
- 
+
   <div class="angles-grid">
     <div class="angle-card">
       <img src="img/tooly-green-twisted.jpg"
@@ -1573,7 +1348,7 @@ Copy
     </div>
   </div>
 </section>
- 
+
 <!-- ============ SECTION 02: HOW IT WORKS ============ -->
 <section class="section">
   <div class="section-grid">
@@ -1584,7 +1359,7 @@ Copy
     <div>
       <h2>Four steps. No surprises.</h2>
       <p style="color:#5F5E5A;margin-bottom:28px;">From your first email to your keys: about fifteen weeks, end to end.</p>
- 
+
       <div class="steps">
         <div class="step-card">
           <div class="step-num">1</div>
@@ -1614,7 +1389,7 @@ Copy
     </div>
   </div>
 </section>
- 
+
 <!-- ============ SECTION 03: CONFIGURATOR ============ -->
 <section class="configurator-section" id="configure">
   <div class="section-grid">
@@ -1625,7 +1400,7 @@ Copy
     <div>
       <h2>Configure a Tooly.</h2>
       <p>One choice. Pick your colorway — kitchen, door, and roof all match. The price stays at $100,000.</p>
- 
+
       <div class="configurator-card">
         <div class="configurator-grid">
           <div>
@@ -1634,7 +1409,7 @@ Copy
                    src="img/tooly-orange-exterior.png"
                    alt="A Tooly home in sunset orange." />
             </div>
- 
+
             <div class="config-section">
               <div class="config-label">UNIT COLOR</div>
               <div class="config-swatches">
@@ -1649,7 +1424,7 @@ Copy
               </div>
             </div>
           </div>
- 
+
           <div>
             <div class="config-label">YOUR TOOLY</div>
             <table class="summary-table">
@@ -1666,7 +1441,7 @@ Copy
     </div>
   </div>
 </section>
- 
+
 <!-- ============ SECTION 04: A SHORT HISTORY ============ -->
 <section class="history-section">
   <div class="section-grid">
@@ -1676,11 +1451,11 @@ Copy
     </div>
     <div>
       <h2>Older than America.<br/>Older than English.<br/>Concrete works.</h2>
- 
+
       <p>The Pantheon in Rome was finished around 126 A.D. The dome — the largest unreinforced concrete dome in the world, then or now — is still up there. It has survived earthquakes, sieges, lightning strikes, two thousand winters, and approximately nine million tourists a year. Nobody has had to repour it. Nobody has had to reinforce it. Hadrian's contractors got it right the first time.</p>
- 
+
       <p>Concrete is not a new idea. Concrete is the oldest serious idea humans have ever had about building things that last. We did not invent it. We just use it strategically.</p>
- 
+
       <div class="history-grid">
         <div class="history-card">
           <div class="history-date">126 A.D.</div>
@@ -1713,16 +1488,16 @@ Copy
           <div class="history-body">Cincinnati. World's first concrete skyscraper. A reporter waited up all night for it to fall. It's a hotel now.</div>
         </div>
       </div>
- 
+
       <div class="history-quote">
         <p>"Modern codes of engineering practice would not permit such mischief." — David Moore, on the Pantheon. He meant it as a compliment.</p>
       </div>
- 
+
       <p class="history-closing">A Tooly is built from poured concrete. Hurricane-rated. Sealed. Reinforced. Designed to outlive its first owner, its second owner, and probably its third. It is not a tiny home. It is not a trailer. It is the same idea Hadrian had, with better insulation and a working dishwasher.</p>
     </div>
   </div>
 </section>
- 
+
 <!-- ============ SECTION 05: RENT IT OUT ============ -->
 <section class="rental-section">
   <div class="section-grid">
@@ -1733,11 +1508,11 @@ Copy
     <div>
       <div class="rental-eyebrow">THE TOOL FOR FINANCIAL FREEDOM</div>
       <h2>Earn $1,200+ a month<br/>from the dead grass<br/>in your backyard.</h2>
- 
+
       <p>A Tooly is not just a house. It's a developer's tool, in a homeowner's backyard. The lot you mow every Saturday — the strip of patchy St. Augustine grass between your fence and your shed — is a check, every month, waiting for someone to write it.</p>
- 
+
       <p style="margin-bottom:32px;">Most of our owners do exactly that. They put a Tooly in the backyard. They rent it to a teacher, a nurse, a firefighter, a graduate student, a grandmother who wants her family close. The mortgage pays itself. The cashflow is theirs to keep. And one more Florida family gets to stay in the neighborhood they were born in.</p>
- 
+
       <div class="rental-mathchip">
         <div class="rental-eyebrow" style="margin-bottom:14px;">A TYPICAL MONTH FOR A TOOLY OWNER</div>
         <div class="math-row">
@@ -1763,10 +1538,10 @@ Copy
           <strong>How we landed on this number.</strong> Florida's median household income is $77,700. The federal definition of affordable housing caps rent at 30% of income, which for a Florida household at AMI is roughly $1,943 a month. Toolys typically rent in the $1,500–$1,900 band — comfortably affordable for a working-class tenant, comfortably profitable for the owner.
         </div>
       </div>
- 
+
       <h3>Become a developer.<br/>Without the developer's budget.</h3>
       <p style="margin-bottom:28px;">Real estate development used to be a closed game. You needed a million dollars, a banker, a permit attorney, and a year of your life to put one rental unit on the ground. Tooly opens the game up. $65,000 down, eight weeks, no construction crew on your property for six months, no surprises. The smallest possible barrier to entry into the asset class that has built more American wealth than any other.</p>
- 
+
       <div class="pillar">
         <div class="label">HELP YOURSELF</div>
         <div class="body">Cashflow that doesn't require a side hustle, a second job, or a single hour of your weekend. And your lot value rises ~30% the moment a second cashflowing asset is sitting on it — equity created, free.</div>
@@ -1779,20 +1554,20 @@ Copy
         <div class="label">HELP YOUR STATE</div>
         <div class="body">Florida needs hundreds of thousands of new affordable units to keep its workforce housed. Each Tooly is one more on the right side of that ledger, without razing a single existing block.</div>
       </div>
- 
+
       <div class="bank-block">
         <div class="eyebrow">CALL THE BANK THAT HOLDS YOUR MORTGAGE</div>
         <h4>Your existing bank already wants to say yes.</h4>
         <p style="margin-bottom:20px;">Don't go shopping for a new lender. Pick up the phone and call the bank that already holds the mortgage on your home. A Tooly does not introduce a new property for them to evaluate — it <em>improves</em> the one they already underwrote. The same parcel they already trust is now worth roughly 30% more, with a second cashflow stream attached. Their existing loan just got safer. Your existing relationship just got more valuable.</p>
- 
+
         <div class="bank-script">
           <div class="label">WHAT TO SAY WHEN YOU CALL</div>
           <p>"I'm planning to add a permitted, hurricane-rated accessory dwelling unit to the back of my property. The unit will produce $1,500–$1,900 a month in rental income and is expected to lift the appraised value of my lot by approximately 30%. I'd like to discuss financing the remaining $40,000 against the new equity, ideally as a HELOC, a cash-out refinance, or a renovation loan. Who do I speak with?"</p>
         </div>
- 
+
         <p>That sentence opens nearly every door. The bank holds the mortgage. The bank knows the parcel. The bank wants more of your business. A Tooly is the rare ask that makes the bank's existing position stronger, not riskier.</p>
       </div>
- 
+
       <div class="why-block">
         <div style="font-size:11px;letter-spacing:3px;color:#FFD37E;margin-bottom:14px;">WHY THIS MATTERS</div>
         <h4 style="font-size:20px;">Density without gentrification.</h4>
@@ -1802,7 +1577,7 @@ Copy
     </div>
   </div>
 </section>
- 
+
 <!-- ============ FOOTER ============ -->
 <footer class="footer">
   <div class="footer-grid">
@@ -1815,24 +1590,24 @@ Copy
     </div>
   </div>
 </footer>
- 
+
 <!-- ============ RESERVE FORM MODAL ============ -->
 <div class="modal-backdrop" id="reserve-modal" onclick="if(event.target===this) closeReserveForm()">
   <div class="modal" role="dialog" aria-labelledby="reserve-modal-title" aria-modal="true">
     <button type="button" class="modal-close" onclick="closeReserveForm()" aria-label="Close form">×</button>
- 
+
     <div id="reserve-form-step">
       <div class="modal-eyebrow">RESERVE A TOOLY</div>
       <h2 id="reserve-modal-title">Tell us about your lot.</h2>
       <p class="modal-intro">We'll get back to you within 48 hours with a free desktop review of whether a Tooly is legal where you live.</p>
- 
+
       <!--
         ============ WEB3FORMS INTEGRATION ============
         Submissions are routed through Web3Forms (https://web3forms.com) to
         contact@toolystructures.com. The access_key below is tied to the
         Tooly Web3Forms account; rotate it in the Web3Forms dashboard if
         it ever leaks.
- 
+
         ============ SPAM PROTECTION (three layers) ============
         1. HONEYPOT — the hidden `botcheck` checkbox. Bots fill every field;
            Web3Forms drops the submission if this is non-empty.
@@ -1842,7 +1617,7 @@ Copy
         3. SERVER-SIDE TURNSTILE VALIDATION — done by Web3Forms IF you
            paste your Turnstile *secret key* into the Web3Forms dashboard
            (Settings → Spam Protection → Cloudflare Turnstile).
- 
+
         To finish Turnstile setup:
           a. Sign in at https://dash.cloudflare.com → Turnstile → Add Site
           b. Domain: toolystructures.com (and your *.github.io URL too)
@@ -1851,7 +1626,7 @@ Copy
           e. Copy the SECRET KEY → paste into the Web3Forms dashboard
         Until you do (d), this uses Cloudflare's test key, which always
         passes — your form works but has no real Turnstile protection.
- 
+
         To change the recipient email, log into web3forms.com and update
         it under Email Configuration — no code change needed.
       -->
@@ -1864,27 +1639,27 @@ Copy
       >
         <!-- Web3Forms access key — required -->
         <input type="hidden" name="access_key" value="771e2aee-e235-4471-bb98-3729b756df6f" />
- 
+
         <!-- Email customization (overrides the dashboard defaults) -->
         <input type="hidden" name="subject" value="New Tooly Reservation — Lot Inquiry" />
         <input type="hidden" name="from_name" value="Tooly Website" />
- 
+
         <!-- LAYER 1: Honeypot field. Bots fill every field they see;
              Web3Forms drops the submission if this is non-empty. Hidden from humans. -->
         <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off" />
- 
+
         <div class="form-error" id="reserve-form-error" role="alert"></div>
- 
+
         <div class="form-field">
           <label for="rf-email">EMAIL *</label>
           <input id="rf-email" name="email" type="email" required placeholder="you@example.com" />
         </div>
- 
+
         <div class="form-field">
           <label for="rf-location">CITY OR TOWN *</label>
           <input id="rf-location" name="location" type="text" required placeholder="Hialeah, FL" />
         </div>
- 
+
         <div class="form-field">
           <label for="rf-payment">PAYMENT TYPE *</label>
           <select id="rf-payment" name="payment_type" required>
@@ -1894,44 +1669,44 @@ Copy
             <option value="Not sure yet">Not sure yet</option>
           </select>
         </div>
- 
+
         <div class="form-field">
           <label for="rf-message">QUESTIONS OR COMMENTS</label>
           <textarea id="rf-message" name="message" placeholder="Anything you'd like us to know about your lot, your timeline, or your plans for the Tooly."></textarea>
         </div>
- 
+
         <!-- LAYER 2: Cloudflare Turnstile widget. The script in <head> auto-detects
              this div and renders the captcha. On success it injects a hidden field
              named cf-turnstile-response that Web3Forms validates server-side.
- 
-             REPLACE THE SITEKEY BELOW with your real Cloudflare Turnstile site key.
-             The current value (1x00000000000000000000AA) is Cloudflare's test key
-             which always passes — useful for development, useless against real spam. -->
+
+             Site key below is the live Tooly Turnstile site key. The matching
+             SECRET key lives in the Web3Forms dashboard under Spam Protection —
+             never paste the secret key into HTML. -->
         <div class="turnstile-wrap">
           <div class="cf-turnstile"
-               data-sitekey="1x00000000000000000000AA"
+               data-sitekey="0x4AAAAAADONnx7oich5EdqR"
                data-theme="light"
                data-size="normal"></div>
         </div>
- 
+
         <button type="submit" class="form-submit" id="reserve-submit-btn">Send to Tooly →</button>
       </form>
     </div>
- 
+
     <div id="reserve-thank-you" class="form-thank-you" style="display:none;">
       <h3>Thanks. We'll be in touch.</h3>
       <p>Your message is on its way to the Tooly team at contact@toolystructures.com. We respond within 48 hours, usually faster.</p>
     </div>
   </div>
 </div>
- 
+
 <script>
   // KITCHEN COLOR SWAP — swaps the kitchen render based on swatch click
   (function () {
     var img = document.getElementById('kitchen-image');
     var nameLabel = document.getElementById('kitchen-name');
     var swatches = document.querySelectorAll('.ks');
- 
+
     swatches.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var slug = btn.getAttribute('data-color');
@@ -1944,18 +1719,18 @@ Copy
       });
     });
   })();
- 
+
   // EXTERIOR CONFIGURATOR — single unit color drives roof + door + matching render
   (function () {
     var img = document.getElementById('config-render');
     var colorLabel = document.getElementById('summary-color');
     var swatches = document.querySelectorAll('.unit-swatch');
- 
+
     var renderMap = {
       'orange': { src: 'img/tooly-orange-exterior.png', alt: 'A Tooly home in sunset orange.', label: 'Sunset Orange' },
       'green':  { src: 'img/tooly-green-exterior.png',  alt: 'A Tooly home in forest green.',  label: 'Forest Green' }
     };
- 
+
     swatches.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var color = btn.getAttribute('data-color');
@@ -1969,7 +1744,7 @@ Copy
       });
     });
   })();
- 
+
   // RESERVE FORM MODAL — open, close, submit
   function openReserveForm() {
     var modal = document.getElementById('reserve-modal');
@@ -1981,18 +1756,18 @@ Copy
       if (firstField) firstField.focus();
     }, 50);
   }
- 
+
   function closeReserveForm() {
     var modal = document.getElementById('reserve-modal');
     modal.classList.remove('open');
     document.body.style.overflow = '';
   }
- 
+
   // Close on Escape key
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeReserveForm();
   });
- 
+
   // ============ WEB3FORMS SUBMISSION HANDLER ============
   // Posts the form data to Web3Forms via fetch so we can stay on the page
   // and show a custom thank-you state. Web3Forms returns JSON; we check
@@ -2004,18 +1779,18 @@ Copy
   // server-side IF the Turnstile secret key is set in the Web3Forms dashboard.
   function handleReserveSubmit(event) {
     event.preventDefault();
- 
+
     var form = event.target;
     var submitBtn = document.getElementById('reserve-submit-btn');
     var errorBox = document.getElementById('reserve-form-error');
     var originalBtnText = submitBtn.textContent;
- 
+
     // Reset any prior error
     errorBox.classList.remove('show');
     errorBox.textContent = '';
- 
+
     var formData = new FormData(form);
- 
+
     // Verify Turnstile token is present. The Turnstile widget injects a
     // hidden field named "cf-turnstile-response" once the challenge passes.
     var turnstileToken = formData.get('cf-turnstile-response');
@@ -2023,11 +1798,11 @@ Copy
       showFormError('Please complete the security check below the message field before submitting.');
       return;
     }
- 
+
     // Lock the button only after the pre-flight checks pass
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending…';
- 
+
     fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       body: formData
@@ -2057,19 +1832,18 @@ Copy
       }
     });
   }
- 
+
   function showFormError(message) {
     var errorBox = document.getElementById('reserve-form-error');
     errorBox.textContent = message;
     errorBox.classList.add('show');
   }
- 
+
   function showThankYou() {
     document.getElementById('reserve-form-step').style.display = 'none';
     document.getElementById('reserve-thank-you').style.display = 'block';
   }
 </script>
- 
+
 </body>
 </html>
- 
