@@ -1,0 +1,8 @@
+# Tooly Structures — robots.txt
+# Allow all well-behaved crawlers to index everything.
+# Sitemap lives at the root.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://toolystructures.com/sitemap.xml
