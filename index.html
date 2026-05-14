@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Tooly — A house. Hundred grand. Built to last.</title>
-<meta name="description" content="264 square feet of poured concrete, hurricane-rated, furnished and finished. The future you were promised, on a payment plan you can actually meet." />
+<title>Tooly — The $100,000 home built to last.</title>
+<meta name="description" content="264 square feet, smart, steel and concrete build, hurricane-rated, furnished and finished. The future you were promised, on a payment plan you can actually meet." />
 
 <!-- Canonical URL — tells Google this is the authoritative version of the page -->
 <link rel="canonical" href="https://toolystructures.com/" />
@@ -16,19 +16,59 @@
 <!-- Open Graph — controls how the link looks when shared on Facebook, LinkedIn, iMessage, WhatsApp, Slack, etc. -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://toolystructures.com/" />
-<meta property="og:title" content="Tooly — A house. Hundred grand. Built to last." />
-<meta property="og:description" content="264 square feet of poured concrete, hurricane-rated, furnished and finished. The future you were promised, on a payment plan you can actually meet." />
+<meta property="og:title" content="Tooly — The $100,000 home built to last." />
+<meta property="og:description" content="264 square feet, smart, steel and concrete build, hurricane-rated, furnished and finished. The future you were promised, on a payment plan you can actually meet." />
 <meta property="og:image" content="https://toolystructures.com/img/tooly-orange-hero.jpg" />
 <meta property="og:site_name" content="Tooly" />
 
 <!-- Twitter Card — same idea, for X/Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Tooly — A house. Hundred grand. Built to last." />
-<meta name="twitter:description" content="264 square feet of poured concrete, hurricane-rated, furnished and finished." />
+<meta name="twitter:title" content="Tooly — The $100,000 home built to last." />
+<meta name="twitter:description" content="264 square feet, smart, steel and concrete build, hurricane-rated, furnished and finished. The future you were promised, on a payment plan you can actually meet." />
 <meta name="twitter:image" content="https://toolystructures.com/img/tooly-orange-hero.jpg" />
 
 <!-- Theme color — paints the mobile browser chrome to match brand -->
 <meta name="theme-color" content="#3A6EA5" />
+
+<!-- Structured data — tells Google that Tooly is a business and what it sells -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Tooly",
+  "legalName": "Tooly, LLC",
+  "url": "https://toolystructures.com/",
+  "logo": "https://toolystructures.com/img/tooly-logo.png",
+  "image": "https://toolystructures.com/img/tooly-orange-hero.jpg",
+  "description": "Tooly builds a $100,000 prefab accessory dwelling unit (ADU) for Florida backyards — 264 square feet of hurricane-rated steel and concrete, furnished and finished.",
+  "email": "contact@toolystructures.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Miami",
+    "addressRegion": "FL",
+    "addressCountry": "US"
+  },
+  "areaServed": {
+    "@type": "State",
+    "name": "Florida"
+  },
+  "makesOffer": {
+    "@type": "Offer",
+    "priceCurrency": "USD",
+    "price": "100000",
+    "itemOffered": {
+      "@type": "Product",
+      "name": "Tooly ADU",
+      "description": "A 264 square foot accessory dwelling unit. Steel and concrete build, hurricane-rated, furnished and finished, installed in about 15 weeks.",
+      "image": "https://toolystructures.com/img/tooly-orange-hero.jpg",
+      "brand": {
+        "@type": "Brand",
+        "name": "Tooly"
+      }
+    }
+  }
+}
+</script>
 
 <!-- Preload the default hero render so the page paints fast -->
 <link rel="preload" as="image" href="img/tooly-orange-hero.jpg" />
@@ -1403,7 +1443,7 @@
   <div class="hero">
     <div class="hero-copy">
       <img src="img/tooly-logo.png" alt="Tooly" class="hero-logo-pill" />
-      <h1>a house.<br/>hundred grand.<br/>built to last.</h1>
+      <h1>the $100,000<br/>home built<br/>to last.</h1>
       <p>264 square feet, smart, steel and concrete build, hurricane-rated, furnished and finished. The future you were promised, on a payment plan you can actually meet.</p>
       <div class="hero-ctas">
         <button type="button" class="btn-primary" onclick="openReserveForm()">Reserve a Tooly →</button>
