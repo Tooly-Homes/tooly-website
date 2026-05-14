@@ -32,7 +32,7 @@
   "url": "https://toolystructures.com/adu-miami/",
   "logo": "https://toolystructures.com/img/tooly-logo.png",
   "image": "https://toolystructures.com/img/tooly-orange-hero.jpg",
-  "description": "Tooly is a $100,000 prefab ADU for Miami backyards — hurricane-rated, furnished and finished, installed in about 15 weeks.",
+  "description": "Tooly is an $85,000 prefab ADU for Miami backyards — hurricane-rated, furnished and finished, installed in about 15 weeks.",
   "address": { "@type": "PostalAddress", "addressLocality": "Miami", "addressRegion": "FL", "addressCountry": "US" },
   "areaServed": { "@type": "City", "name": "Miami" }
 }
@@ -51,7 +51,7 @@
     <a href="/" aria-label="Tooly home">
       <img src="/img/tooly-logo.png" alt="Tooly" class="nav-logo" />
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="nav-links">
       <a href="/">Home</a>
       <a href="/adu-florida/">Florida Guide</a>
       <a href="/adu-cost/">ADU Cost</a>
@@ -59,6 +59,7 @@
       <a href="/resources/">Resources</a>
     </div>
     <a href="/#reserve" class="nav-cta">Reserve</a>
+    <button type="button" class="nav-hamburger" aria-label="Menu" aria-controls="nav-links" aria-expanded="false" onclick="toggleMobileNav(this)"><span aria-hidden="true"></span></button>
   </nav>
 
   <div class="page-hero">
@@ -118,11 +119,11 @@
 
   <table class="data-table">
     <tbody>
-      <tr><td>Tooly unit (delivered, furnished, finished)</td><td>$100,000</td></tr>
+      <tr><td>Tooly unit (delivered, furnished, finished)</td><td>$85,000</td></tr>
       <tr><td>Miami building permit + impact fees</td><td>$3,500 – $6,500</td></tr>
       <tr><td>Foundation + site prep</td><td>$12,000 – $20,000</td></tr>
       <tr><td>Utility tie-ins (water, sewer, electrical)</td><td>$6,000 – $14,000</td></tr>
-      <tr><td><strong>Total installed cost</strong></td><td><strong>$121,500 – $140,500</strong></td></tr>
+      <tr><td><strong>Total installed cost</strong></td><td><strong>$106,500 – $125,500</strong></td></tr>
     </tbody>
   </table>
 
@@ -182,5 +183,24 @@
   </div>
 </footer>
 
+<script>
+function toggleMobileNav(btn) {
+  var links = document.getElementById("nav-links");
+  if (!links) return;
+  var open = links.classList.toggle("open");
+  btn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+document.addEventListener("DOMContentLoaded", function () {
+  var links = document.getElementById("nav-links");
+  if (!links) return;
+  links.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      links.classList.remove("open");
+      var btn = document.querySelector(".nav-hamburger");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+    });
+  });
+});
+</script>
 </body>
 </html>

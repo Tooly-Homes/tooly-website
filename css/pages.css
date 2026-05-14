@@ -23,14 +23,18 @@ a { color: inherit; }
 
 /* ============ HEADER + NAV ============ */
 .header { background: #3A6EA5; }
+/* Nav is sticky — pins to the top of the viewport as the user scrolls, on
+   every screen size. z-index sits above content but below modals. */
 .nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 32px;
   border-bottom: 1px solid rgba(255,255,255,0.15);
-  max-width: 1280px;
-  margin: 0 auto;
+  background: #3A6EA5;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 .nav-logo { height: 36px; width: auto; display: block; flex-shrink: 0; }
 .nav-links {
@@ -461,8 +465,61 @@ a { color: inherit; }
 }
 
 @media (max-width: 768px) {
-  .nav { padding: 14px 20px; gap: 12px; }
+  .nav { padding: 14px 20px; gap: 12px; position: relative; }
   .nav-logo { height: 30px; }
-  .nav-links { display: none; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: #3A6EA5;
+    padding: 12px 20px 20px;
+    gap: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    z-index: 100;
+    font-size: 14px;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a {
+    padding: 12px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .nav-hamburger { display: inline-flex; }
   .container { padding: 0 20px; }
 }
+
+/* Hamburger button — hidden on desktop, shown on mobile by the rule above. */
+.nav-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+.nav-hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #FFFFFF;
+  position: relative;
+}
+.nav-hamburger span::before,
+.nav-hamburger span::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 2px;
+  background: #FFFFFF;
+}
+.nav-hamburger span::before { top: -6px; }
+.nav-hamburger span::after  { top: 6px; }

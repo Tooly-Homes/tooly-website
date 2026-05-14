@@ -37,7 +37,7 @@
     <a href="/" aria-label="Tooly home">
       <img src="/img/tooly-logo.png" alt="Tooly" class="nav-logo" />
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="nav-links">
       <a href="/">Home</a>
       <a href="/adu-florida/">Florida Guide</a>
       <a href="/adu-cost/">ADU Cost</a>
@@ -45,6 +45,7 @@
       <a href="/faq/">FAQ</a>
     </div>
     <a href="/#reserve" class="nav-cta">Reserve</a>
+    <button type="button" class="nav-hamburger" aria-label="Menu" aria-controls="nav-links" aria-expanded="false" onclick="toggleMobileNav(this)"><span aria-hidden="true"></span></button>
   </nav>
 
   <div class="page-hero">
@@ -66,7 +67,7 @@
     </div>
     <div class="card">
       <h3>How much does an ADU cost?</h3>
-      <p>$80,000 to $300,000+ is the honest market range. Tooly is $100,000 fixed. Here's the line-by-line breakdown.</p>
+      <p>$115,000 to $300,000+ is the honest market range. Tooly is $85,000 fixed. Here's the line-by-line breakdown.</p>
       <a href="/adu-cost/">See the breakdown →</a>
     </div>
     <div class="card">
@@ -185,5 +186,24 @@
   </div>
 </footer>
 
+<script>
+function toggleMobileNav(btn) {
+  var links = document.getElementById("nav-links");
+  if (!links) return;
+  var open = links.classList.toggle("open");
+  btn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+document.addEventListener("DOMContentLoaded", function () {
+  var links = document.getElementById("nav-links");
+  if (!links) return;
+  links.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      links.classList.remove("open");
+      var btn = document.querySelector(".nav-hamburger");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+    });
+  });
+});
+</script>
 </body>
 </html>

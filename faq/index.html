@@ -42,7 +42,7 @@
       "name": "How much does a Tooly cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The Tooly unit itself is $100,000 fixed — including delivery, furniture, appliances, and finishes. Installed all-in on a typical Florida lot, expect $112,000 to $146,000 once you add permits ($1,500–$6,500), site work ($8,000–$25,000), and utility tie-ins ($3,000–$15,000)."
+        "text": "The Tooly unit itself is $85,000 fixed — including delivery, furniture, appliances, and finishes. Installed all-in on a typical Florida lot, expect $97,000 to $131,000 once you add permits ($1,500–$6,500), site work ($8,000–$25,000), and utility tie-ins ($3,000–$15,000)."
       }
     },
     {
@@ -58,7 +58,7 @@
       "name": "How is Tooly rated for hurricanes?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Tooly is engineered to the Florida Building Code with a Category 5 wind rating. The poured concrete walls and standing-seam K-span steel roof exceed FBC requirements in all Florida wind zones, including Miami-Dade's high-velocity hurricane zone (HVHZ)."
+        "text": "Tooly is engineered to the Florida Building Code with a Category 5 wind rating. The hurricane-rated steel structure with on-site poured concrete exceeds FBC requirements in all Florida wind zones, including Miami-Dade's high-velocity hurricane zone (HVHZ)."
       }
     },
     {
@@ -135,7 +135,7 @@
     },
     {
       "@type": "Question",
-      "name": "What's included in the $100,000?",
+      "name": "What's included in the $85,000?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "The unit, delivered to your lot: hurricane-rated structure (concrete walls, steel roof), full interior finishes, kitchen with appliances, bathroom with fixtures, sleeping area, living area, and furniture — bed, sofa, table, chairs, window treatments. You can move someone in the day it's hooked up to utilities."
@@ -154,7 +154,7 @@
       "name": "Is the price really fixed?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. Tooly's $100,000 unit price is fixed. The variable piece is what's specific to your lot — permits, foundation, utility tie-ins — paid to your city and your local contractors, not to Tooly. We give you the unit price upfront and never invoice change orders on the structure."
+        "text": "Yes. Tooly's $85,000 unit price is fixed. The variable piece is what's specific to your lot — permits, foundation, utility tie-ins — paid to your city and your local contractors, not to Tooly. We give you the unit price upfront and never invoice change orders on the structure."
       }
     },
     {
@@ -206,7 +206,7 @@
     <a href="/" aria-label="Tooly home">
       <img src="/img/tooly-logo.png" alt="Tooly" class="nav-logo" />
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="nav-links">
       <a href="/">Home</a>
       <a href="/adu-florida/">Florida Guide</a>
       <a href="/adu-cost/">ADU Cost</a>
@@ -214,6 +214,7 @@
       <a href="/resources/">Resources</a>
     </div>
     <a href="/#reserve" class="nav-cta">Reserve</a>
+    <button type="button" class="nav-hamburger" aria-label="Menu" aria-controls="nav-links" aria-expanded="false" onclick="toggleMobileNav(this)"><span aria-hidden="true"></span></button>
   </nav>
 
   <div class="page-hero">
@@ -234,11 +235,11 @@
 
   <details class="faq-item">
     <summary>How much does a Tooly cost?</summary>
-    <div class="faq-body"><p>The Tooly unit itself is <strong>$100,000 fixed</strong> — including delivery, furniture, appliances, and finishes. Installed all-in on a typical Florida lot, expect <strong>$112,000–$146,000</strong> once you add permits, site work, and utility tie-ins. <a href="/adu-cost/">Full breakdown here</a>.</p></div>
+    <div class="faq-body"><p>The Tooly unit itself is <strong>$85,000 fixed</strong> — including delivery, furniture, appliances, and finishes. Installed all-in on a typical Florida lot, expect <strong>$97,000–$131,000</strong> once you add permits, site work, and utility tie-ins. <a href="/adu-cost/">Full breakdown here</a>.</p></div>
   </details>
 
   <details class="faq-item">
-    <summary>What's included in the $100,000?</summary>
+    <summary>What's included in the $85,000?</summary>
     <div class="faq-body"><p>The unit delivered to your lot: hurricane-rated structure (concrete walls, steel roof), full interior finishes, kitchen with appliances, bathroom with fixtures, sleeping area, living area, and furniture — bed, sofa, table, chairs, window treatments. You can move someone in the day it's hooked up.</p></div>
   </details>
 
@@ -249,7 +250,7 @@
 
   <details class="faq-item">
     <summary>Is the price really fixed?</summary>
-    <div class="faq-body"><p>Yes. Tooly's $100,000 unit price is fixed. The variable piece is what's specific to your lot — permits, foundation, utility tie-ins — paid to your city and local contractors, not to Tooly. We never invoice change orders on the structure.</p></div>
+    <div class="faq-body"><p>Yes. Tooly's $85,000 unit price is fixed. The variable piece is what's specific to your lot — permits, foundation, utility tie-ins — paid to your city and local contractors, not to Tooly. We never invoice change orders on the structure.</p></div>
   </details>
 </section>
 
@@ -291,7 +292,7 @@
 
   <details class="faq-item" open>
     <summary>How is Tooly rated for hurricanes?</summary>
-    <div class="faq-body"><p>Tooly is engineered to the Florida Building Code with a <strong>Category 5 wind rating</strong>. The poured concrete walls and standing-seam K-span steel roof exceed FBC requirements in all Florida wind zones, including Miami-Dade's high-velocity hurricane zone (HVHZ).</p></div>
+    <div class="faq-body"><p>Tooly is engineered to the Florida Building Code with a <strong>Category 5 wind rating</strong>. The hurricane-rated steel structure with on-site poured concrete exceeds FBC requirements in all Florida wind zones, including Miami-Dade's high-velocity hurricane zone (HVHZ).</p></div>
   </details>
 
   <details class="faq-item">
@@ -389,5 +390,24 @@
   </div>
 </footer>
 
+<script>
+function toggleMobileNav(btn) {
+  var links = document.getElementById("nav-links");
+  if (!links) return;
+  var open = links.classList.toggle("open");
+  btn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+document.addEventListener("DOMContentLoaded", function () {
+  var links = document.getElementById("nav-links");
+  if (!links) return;
+  links.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      links.classList.remove("open");
+      var btn = document.querySelector(".nav-hamburger");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+    });
+  });
+});
+</script>
 </body>
 </html>

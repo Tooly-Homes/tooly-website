@@ -56,7 +56,7 @@
     <a href="/" aria-label="Tooly home">
       <img src="/img/tooly-logo.png" alt="Tooly" class="nav-logo" />
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="nav-links">
       <a href="/">Home</a>
       <a href="/adu-cost/">ADU Cost</a>
       <a href="/adu-financing/">Financing</a>
@@ -64,6 +64,7 @@
       <a href="/resources/">Resources</a>
     </div>
     <a href="/#reserve" class="nav-cta">Reserve</a>
+    <button type="button" class="nav-hamburger" aria-label="Menu" aria-controls="nav-links" aria-expanded="false" onclick="toggleMobileNav(this)"><span aria-hidden="true"></span></button>
   </nav>
 
   <div class="page-hero">
@@ -97,7 +98,7 @@
   <h2>What people actually want to know.</h2>
 
   <h3>1. How much does an ADU cost in Florida?</h3>
-  <p>The honest answer most builders give is "$80,000 to $300,000+, depending on size, finishes, site work, and contractor." Tooly's answer is different: <strong>$100,000, fixed, furnished, finished.</strong> One price, no surprises. Full breakdown on <a href="/adu-cost/">the ADU cost page</a>.</p>
+  <p>The honest answer most builders give is "$115,000 to $300,000+, depending on size, finishes, site work, and contractor." Tooly's answer is different: <strong>$85,000, fixed, furnished, finished.</strong> One price, no surprises. Full breakdown on <a href="/adu-cost/">the ADU cost page</a>.</p>
 
   <h3>2. How do you pay for one?</h3>
   <p>Most homeowners use a HELOC, cash-out refinance, or construction-to-perm loan. Some Florida credit unions and specialty lenders offer ADU-specific products that underwrite against <em>future rental income</em> rather than current equity. We track the active lenders on <a href="/adu-financing/">our financing page</a>.</p>
@@ -117,7 +118,7 @@
   <div class="card-grid">
     <div class="card">
       <h3>Rental income</h3>
-      <p>$1,200–$1,800/month in most Florida metros. A $100,000 unit producing $15,000/year in rent yields roughly 15% before financing costs — well above most rental-property cap rates.</p>
+      <p>$1,200–$1,800/month in most Florida metros. A $85,000 unit producing $15,000/year in rent yields roughly 15% before financing costs — well above most rental-property cap rates.</p>
       <a href="/adu-rental-income/">See the rent math →</a>
     </div>
     <div class="card">
@@ -224,5 +225,24 @@
   </div>
 </footer>
 
+<script>
+function toggleMobileNav(btn) {
+  var links = document.getElementById("nav-links");
+  if (!links) return;
+  var open = links.classList.toggle("open");
+  btn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+document.addEventListener("DOMContentLoaded", function () {
+  var links = document.getElementById("nav-links");
+  if (!links) return;
+  links.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      links.classList.remove("open");
+      var btn = document.querySelector(".nav-hamburger");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+    });
+  });
+});
+</script>
 </body>
 </html>
