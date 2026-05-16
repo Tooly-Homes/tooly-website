@@ -1,0 +1,29 @@
+{
+  "name": "rwa-marketplace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tokenized real-world asset (RWA) + on-chain marketplace for Ethereum L2 testnets",
+  "type": "module",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:sepolia": "hardhat ignition deploy ignition/modules/RWADeploy.ts --network sepolia",
+    "deploy:baseSepolia": "hardhat ignition deploy ignition/modules/RWADeploy.ts --network baseSepolia"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^3.1.5",
+    "@nomicfoundation/hardhat-ignition-ethers": "^3.1.5",
+    "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^3.0.5",
+    "@types/chai": "^5.2.3",
+    "@types/mocha": ">=10.0.10",
+    "@types/node": "^22.8.5",
+    "chai": "^6.2.2",
+    "ethers": "^6.14.0",
+    "hardhat": "^3.4.5",
+    "mocha": "^11.0.0",
+    "typescript": "~5.8.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.6.1"
+  }
+}

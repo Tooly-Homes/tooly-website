@@ -1,0 +1,10 @@
+/node_modules
+/dist
+/artifacts
+/cache
+/types
+/coverage
+/ignition/deployments
+.env
+.env.*
+!.env.example
